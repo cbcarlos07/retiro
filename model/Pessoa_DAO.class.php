@@ -6,18 +6,19 @@
  * Date: 23/12/2016
  * Time: 16:26
  */
-include ("ConnectionFactory.class.php");
-include ("services/PessoaList.class.php");
+
+//include_once 'ConnectionFactory.class.php';
 class Pessoa_DAO
 {
     private $conexao = null;
     public function inserir(Pessoa $pessoa){
+        require_once 'ConnectionFactory.class.php';
         $conexao = null;
         $teste = false;
         $this->conexao =  new ConnectionFactory();
         $sql = "INSERT INTO PESSOA 
             (CD_PESSOA, NM_PESSOA, NR_CPF, NR_TELEFONE, DS_EMAIL, CD_VALOR, CD_RETIRO, SN_CHALE, DT_NASCIMENTO)
-        VALUES(NULL,?,?,?,?,?,?,?,?)";
+        VALUES(NULL,     :NOME,      :CPF,   :TELEFONE,   :EMAIL,   :VALOR,   :RETIRO,   :CHALE,   :DATA_)";
         try {
             $datas = explode('/',$pessoa->getDtNascimento());
             $dia = $datas[0];
@@ -25,15 +26,16 @@ class Pessoa_DAO
             $ano = $datas[2];
             $data = $ano.'-'.$mes.'-'.$dia;
             $stmt = $this->conexao->prepare($sql);
-            $stmt->bindValue(1,$pessoa->getNmPessoa());
-            $stmt->bindValue(2, $pessoa->getNrCpf());
-            $stmt->bindValue(3,$pessoa->getNrTelefone());
-            $stmt->bindValue(4,$pessoa->getDsEmail());
-            $stmt->bindValue(5,$pessoa->getValorCodigo());
-            $stmt->bindValue(6,$pessoa->getSnChale());
-            $stmt->bindValue(7,$pessoa->$data);
+            $stmt->bindValue(":NOME",$pessoa->getNmPessoa(), PDO::PARAM_STR);
+            $stmt->bindValue(":CPF", $pessoa->getNrCpf(),PDO::PARAM_STR);
+            $stmt->bindValue(":TELEFONE",$pessoa->getNrTelefone(),PDO::PARAM_STR);
+            $stmt->bindValue(":EMAIL",$pessoa->getDsEmail(),PDO::PARAM_STR);
+            $stmt->bindValue(":VALOR",$pessoa->getValorCodigo(),PDO::PARAM_INT);
+            $stmt->bindValue(":RETIRO",$pessoa->getRetiro()->getCdRetiro(), PDO::PARAM_INT);
+            $stmt->bindValue(":CHALE",$pessoa->getSnChale(), PDO::PARAM_STR);
+            $stmt->bindValue(":DATA_",$data, PDO::PARAM_STR);
             $stmt->execute();
-            $stmt.execute();
+
             $teste = true;
             $this->conexao = null;
         } catch (PDOException $ex) {
@@ -46,11 +48,11 @@ class Pessoa_DAO
         $teste = false;
         $this->conexao =  new ConnectionFactory();
         $sql = "UPDATE PESSOA SET 
-                NM_PESSOA = ?, NR_CPF = ?, 
-                NR_TELEFONE = ?, DS_EMAIL = ?,
-                CD_VALOR = ?, CD_RETIRO = ?, SN_CHALE = ? 
-                ,DT_NASCIMENTO = ?
-                 WHERE CD_PESSOA = ?";
+                NM_PESSOA = :NOME, NR_CPF = :CPF, 
+                NR_TELEFONE = :TELEFONE, DS_EMAIL = :EMAIL,
+                CD_VALOR = :VALOR, CD_RETIRO = :RETIRO, SN_CHALE = :CHALE 
+                ,DT_NASCIMENTO = :DATA_
+                 WHERE CD_PESSOA = :CODIGO";
         try {
             $datas = explode('/',$pessoa->getDtNascimento());
             $dia = $datas[0];
@@ -58,16 +60,17 @@ class Pessoa_DAO
             $ano = $datas[2];
             $data = $ano.'-'.$mes.'-'.$dia;
             $stmt = $this->conexao->prepare($sql);
-            $stmt->bindValue(1,$pessoa->getNmPessoa());
-            $stmt->bindValue(2, $pessoa->getNrCpf());
-            $stmt->bindValue(3,$pessoa->getNrTelefone());
-            $stmt->bindValue(4,$pessoa->getDsEmail());
-            $stmt->bindValue(5,$pessoa->getValorCodigo());
-            $stmt->bindValue(6,$pessoa->getSnChale());
-            $stmt->bindValue(7,$pessoa->$data);
-            $stmt->bindValue(8,$pessoa->getCodigoPessoa());
+            $stmt->bindValue(":NOME",$pessoa->getNmPessoa(), PDO::PARAM_STR);
+            $stmt->bindValue(":CPF", $pessoa->getNrCpf(), PDO::PARAM_STR);
+            $stmt->bindValue(":TELEFONE",$pessoa->getNrTelefone(), PDO::PARAM_STR);
+            $stmt->bindValue(":EMAIL",$pessoa->getDsEmail(), PDO::PARAM_STR);
+            $stmt->bindValue(":VALOR",$pessoa->getValorCodigo(), PDO::PARAM_INT);
+            $stmt->bindValue(":CHALE",$pessoa->getSnChale(), PDO::PARAM_STR);
+            $stmt->bindValue(":RETIRO",$pessoa->getRetiro()->getCdRetiro(), PDO::PARAM_INT);
+            $stmt->bindValue(":DATA_",$data);
+            $stmt->bindValue(":CODIGO",$pessoa->getCodigoPessoa());
             $stmt->execute();
-            $stmt.execute();
+
             $teste = true;
             $this->conexao = null;
         } catch (PDOException $ex) {
@@ -80,11 +83,11 @@ class Pessoa_DAO
         $conexao = null;
         $teste = false;
         $this->conexao =  new ConnectionFactory();
-        $sql = "DELETE FROM PESSOA WHERE CD_PESSOA = ?";
+        $sql = "DELETE FROM PESSOA WHERE CD_PESSOA = :codigo";
         try {
             $stmt = $this->conexao->prepare($sql);
-            $stmt->bindValue(1, $codigo);
-            $stmt.execute();
+            $stmt->bindValue(":codigo", $codigo,PDO::PARAM_INT);
+            $stmt->execute();
             $teste = true;
             $this->conexao = null;
         } catch (PDOException $ex) {
@@ -94,7 +97,9 @@ class Pessoa_DAO
     }
 
     public function getListaPessoa($nome){
-
+        include_once ("services/PessoaList.class.php");
+        require_once ('model/Pessoa_DAO.class.php');
+        include_once 'ConnectionFactory.class.php';
         $conexao = null;
 
         $this->conexao =  new ConnectionFactory();
@@ -107,23 +112,24 @@ class Pessoa_DAO
                 $stmt = $this->conexao->prepare($sql);
 
             }else{
-                $sql = "SELECT * FROM V_PESSOA P WHERE P.NM_PESSOA LIKE ?";
+                $sql = "SELECT * FROM V_PESSOA P WHERE P.NM_PESSOA LIKE :nome";
                 $stmt = $this->conexao->prepare($sql);
-                $stmt->bindValue(1, "%"+$nome+"%");
+                $stmt->bindValue(":nome", "%$nome%", PDO::PARAM_STR);
 
             }
-            while($row = $stmt->fetch(PDO::FETCH_OBJ)){
+            $stmt->execute();
+            while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
                 $pessoa = new Pessoa();
-                $pessoa->setCodigo_pessoa($row["CD_PESSOA"]);
-                $pessoa->setNm_pessoa($row["NM_PESSOA"]);
-                $pessoa->setNr_cpf($row["CPF"]);
-                $pessoa->setNr_telefone($row["NR_TELEFONE"]);
-                $pessoa->setDs_email($row["DS_EMAIL"]);
-                $pessoa->setSn_chale($row["SN_CHALE"]);
-                $pessoa->setValor_pagar($row["TOTAL"]);
-                $pessoa->setValor_falta($row["FALTA"]);
-                $pessoa->setValor_valor($row["VALOR"]);
-                $pessoa->setValor_pago($row["PAGO"]);
+                $pessoa->setCodigoPessoa($row["CD_PESSOA"]);
+                $pessoa->setNmPessoa($row["NM_PESSOA"]);
+                $pessoa->setNrCpf($row["CPF"]);
+                $pessoa->setNrTelefone($row["NR_TELEFONE"]);
+                $pessoa->setDsEmail($row["DS_EMAIL"]);
+                $pessoa->setSnChale($row["SN_CHALE"]);
+                $pessoa->setValorPagar($row["TOTAL"]);
+                $pessoa->setValorFalta($row["FALTA"]);
+                $pessoa->setValorValor($row["VALOR"]);
+                $pessoa->setValorPago($row["PAGO"]);
                 $pessoaList->addPessoa($pessoa);
             }
             $this->conexao = null;
@@ -135,35 +141,41 @@ class Pessoa_DAO
     }
 
     public function getPessoa($codigo){
+
+        require_once 'beans/Pessoa.class.php';
+        require_once 'beans/Retiro.class.php';
         $pessoa = null;
         $conexao = null;
 
         $this->conexao =  new ConnectionFactory();
 
-        $sql = "SELECT * FROM V_PESSOA WHERE CD_PESSOA = ?";
+        $sql = "SELECT * FROM V_PESSOA P WHERE P.CD_PESSOA = :codigo";
 
         try {
             $stmt = $this->conexao->prepare($sql);
-            $stmt->bindValue(1, $codigo);
+            $stmt->bindValue(":codigo", $codigo, PDO::PARAM_INT);
+            $stmt->execute();
+            if($row =  $stmt->fetch(PDO::FETCH_ASSOC)){
 
-            if($row =  $stmt->fetch(PDO::FETCH_OBJ)){
                 $pessoa = new Pessoa();
-               $pessoa->setCodigo_pessoa($row["CD_PESSOA"]);
-               $pessoa->setNm_pessoa($row["NM_PESSOA"]);
-               $pessoa->setNr_cpf($row["NR_CPF"]);
-               $pessoa->setNr_telefone($row["NR_TELEFONE"]);
-               $pessoa->setDs_email($row["DS_EMAIL"]);
-               $pessoa->setValor_codigo($row["CD_VALOR"]);
-               $pessoa->setValor_valor($row["VALOR"]);
-               $pessoa->setSn_chale($row["SN_CHALE"]);
-               $pessoa->setValor_pagar($row["TOTAL"]);
-               $pessoa->setValor_falta($row["FALTA"]);
-               $pessoa->setRetiro(new Retiro());
-               $pessoa->getRetiro().setCd_retiro($row["CD_RETIRO"]);
-               $pessoa->getRetiro().setDs_retiro($row["RETIRO"]);
-               $pessoa->setValor_pago($row["PAGO"]);
-               $pessoa->setDt_nascimento($row["DT_NASCIMENTO"]);
-                
+                $pessoa->setCodigoPessoa($row["CD_PESSOA"]);
+                $pessoa->setNmPessoa($row["NM_PESSOA"]);
+                $pessoa->setNrCpf($row["CPF"]);
+                $pessoa->setNrTelefone($row["NR_TELEFONE"]);
+                $pessoa->setDsEmail($row["DS_EMAIL"]);
+                $pessoa->setSnChale($row["SN_CHALE"]);
+                $pessoa->setValorPagar($row["TOTAL"]);
+                $pessoa->setValorFalta($row["FALTA"]);
+                $pessoa->setValorValor($row["VALOR"]);
+                $pessoa->setValorPago($row["PAGO"]);
+
+
+                $retiro = new Retiro();
+                $retiro->setCdRetiro($row["CD_RETIRO"]);
+                $pessoa->setRetiro($retiro);
+
+
+                $pessoa->setDtNascimento($row["DT_NASCIMENTO"]);
 
             }
             $this->conexao = null;
@@ -353,6 +365,8 @@ class Pessoa_DAO
     }
 
     public function inserirDesistente($pessoa){
+        require_once 'Pagamentos_DAO.class.php';
+        require_once 'ConnectionFactory.class.php';
         $codigo = 0;
 
         $conexao = null;
@@ -363,20 +377,22 @@ class Pessoa_DAO
                NM_DESISTENTE, CPF_DESISTENTE, TOTAL, FALTA, PAGO, VALOR, SN_CHALE, NR_TELEFONE, DT_NASCIMENTO, DS_EMAIL, RETIRO
              ) 
               SELECT P.NM_PESSOA, P.NR_CPF, P.TOTAL,  P.FALTA, P.PAGO, P.CD_VALOR, P.SN_CHALE, P.NR_TELEFONE, P.DT_NASCIMENTO, P.DS_EMAIL, CD_RETIRO FROM V_PESSOA P
-              WHERE P.CD_PESSOA = ?";
+              WHERE P.CD_PESSOA = :codigo";
             try {
-                $stmt = $this->conexao->prepare(sql);
-                $stmt->bindValue(1, $pessoa);
+                $stmt = $this->conexao->prepare($sql);
+                $stmt->bindValue(":codigo", $pessoa, PDO::PARAM_INT);
 
                 $stmt->execute();
-                $codigo =  $this->conexao->lastInsertId();
+                //$codigo =  $this->conexao->lastInsertId();
+                $codigo = 1;
 
+                $this->conexao = null;
             } catch (PDOException $ex) {
                 echo "Erro: ".$ex->getMessage();
             }
              $pd = new Pagamentos_DAO();
              $pd->deletePessoa($pessoa);
-             delete($pessoa);
+             $this->delete($pessoa);
          return $codigo;
     }
 }

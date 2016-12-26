@@ -6,16 +6,18 @@
  * Date: 24/12/2016
  * Time: 22:31
  */
-include ("../model/Pagamentos_DAO.class.php");
+
 class Pagamentos_Controller
 {
     public function inserir(Pagamentos $pagamentos){
+        require_once '../model/Pagamentos_DAO.class.php';
         $pd = new Pagamentos_DAO();
         $teste = $pd->inserir($pagamentos);
         return $teste;
     }
 
     public function update(Pagamentos $pagamentos){
+        require_once '../model/Pagamentos_DAO.class.php';
         $pd = new Pagamentos_DAO();
         $teste = $pd->update($pagamentos);
         return $teste;
@@ -34,12 +36,14 @@ class Pagamentos_Controller
     }
 
     public function getListaPagamentos($nome, $pessoa){
+        include_once ("model/Pagamentos_DAO.class.php");
         $pd = new Pagamentos_DAO();
         $teste = $pd->getListaPagamentos($nome, $pessoa);
         return $teste;
     }
 
     public function getPagamentos($codigo){
+        require_once 'model/Pagamentos_DAO.class.php';
         $pd = new Pagamentos_DAO();
         $teste = $pd->getPagamentos($codigo);
         return $teste;

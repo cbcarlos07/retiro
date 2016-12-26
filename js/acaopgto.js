@@ -13,25 +13,29 @@
 
 var mensagem = $('.mensagem');
 var id;
+var name;
 
 function salvar(){
         jQuery('#cad-pgto').submit(function(){
         //alert('Submit');
         //var dados = jQuery( this ).serialize();
+        var nome   = document.getElementById("nome").value;
         var codigo   = document.getElementById("codigo").value;        
         var valor = document.getElementById("valor").value;        
         var data = document.getElementById("data").value; 
         var acao = document.getElementById("acao").value;
         var pessoa =document.getElementById("pessoa").value;
         id = pessoa;
+        name = nome;
         
         console.log("Acao: "+acao);
         //var cracha = $('#cracha').value;
         //alert("Acao: "+acao);    
         //console.log("Usuario: "+usuario+" Senha: "+senha);    
-        jQuery.ajax({
+        $.ajax({
+                dataType: 'json',
                 type: "POST",
-                url: "pagamento",
+                url: "funcoes/pgto.php",
                 beforeSend: carregando,
                 data: {
                     'codigo'    : codigo,
@@ -64,7 +68,8 @@ function salvar(){
     
     function operacao(codigo, acao){
         console.log("Codigo: "+acao);
-        jQuery.ajax({
+        $.ajax({
+                dataType: 'json',
                 type: "POST",
                 url: "desistente",
                 beforeSend: carregando,
@@ -120,9 +125,17 @@ function carregando(){
 }
 function sucesso(msg){
         var mensagem = $('.mensagem');
-        mensagem.empty().html('<p class="alert alert-success"><strong>OK. </strong>'+msg+'<img src="img/ok.png" alt="Carregando..."></p>').fadeIn("fast");                
+        mensagem.empty().html('<p class="alert alert-success"><strong>OK. </strong>'+msg+'<img src="img/ok.png" alt="Carregando..."></p>').fadeIn("fast");
+        var url = 'admpgto.php';
         setTimeout(function (){
-            location.href= "pagamento?codigo="+id;
+            var form = $('<form action="' + url + '" method="post">' +
+                '<input type="text" name="codigo" value="' + id + '" />' +
+                '<input type="text" name="acao" value="' + name + '" />' +
+                '</form>');
+            var div = $('<div style="display: none;>"'+form+'</div>');
+            $('body').append(div);
+            form.submit();
+           // location.href= "pagamento?codigo="+id;
         },1000);
         
         //window.setTimeout()

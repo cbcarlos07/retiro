@@ -44,6 +44,46 @@ $('.calc-idade').click(function (){
 
 })
 
+$('.data-nasc').focusout(function (){
+    var hoje = new Date();
+    console.log("Hoje: "+hoje);
+    var data = document.getElementById("data").value;
+    var dataNasc = data.split("/");
+    var dia = dataNasc[0];
+    var mes = dataNasc[1];
+    var ano = dataNasc[2];
+    console.log("Data do campo: "+data);
+    var nascimento = new Date(mes +"/"+dia+"/"+ano);
+    console.log("Nascimento: "+nascimento);
+    var campoidade = document.getElementById("idade");
+    var diferencaAnos = hoje.getFullYear() - nascimento.getFullYear();
+    if ( new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate()) <
+        new Date(hoje.getFullYear(), nascimento.getMonth(), nascimento.getDate()) )
+        diferencaAnos--;
+    //return diferencaAnos;
+    console.log("Idade:"+diferencaAnos);
+    campoidade.value = diferencaAnos;
+    $.ajax({
+        dataType: 'json',
+        type: "POST",
+        url: "funcoes/valor.php",
+
+        data: {
+            'idade'    : diferencaAnos,
+            'acao'      : 'R'
+        },
+        success: function( data )
+        {
+
+            console.log("Data: "+data.idade);
+            valor = data.valor;
+            selecionarValor(data.idade);
+            setTotal();
+        }
+    });
+
+})
+
 $(document).ready(function(){
     
     console.log("Calcular idade");
@@ -71,7 +111,7 @@ $(document).ready(function(){
      $.ajax({
                 dataType: 'json',
                 type: "POST",
-                url: "valor",
+                url: "funcoes/valor.php",
                 
                 data: {
                     'idade'    : diferencaAnos,
@@ -115,13 +155,13 @@ function setTotal(){
     var campoTotal = document.getElementById("total");
     var valorTotal = valor;
     if(chale.checked == true){
-        valorTotal = valorTotal + 200;
+        valorTotal = parseFloat(valorTotal) + parseInt(200);
     }
     //var valor = 16.00
     //var texto = valorTotal.toLocaleString("pt-br", { style: "currency" });
     console.log("Valor: "+valorTotal);
-    var texto = Number(valorTotal.toFixed(2)).toLocaleString('pt-br');
-    var value1 = new Number(texto).toLocaleString('br', { style: 'currency', currency: 'BRL'});
+   // var texto = Number(valorTotal.toFixed(2)).toLocaleString('pt-br');
+    var value1 = new Number(valorTotal).toLocaleString('br', { style: 'currency', currency: 'BRL'});
     campoTotal.value = value1.replace(".",",");
    // alert("Total");
 }

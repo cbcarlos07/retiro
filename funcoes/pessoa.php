@@ -51,7 +51,7 @@ if(isset($_POST['data'])){
 
 
 switch ($acao) {
-    case 'I':
+    case 'C':
         cadastrar(
         $nome,
         $cpf,
@@ -75,25 +75,32 @@ switch ($acao) {
     case 'E':
         excluir($codigo);
         break;
+    case 'D':
+
+        desistente($codigo);
+        break;
 }
 
 
-function cadastrar($nome,
-                   $cpf,
+function cadastrar($nome,$cpf,
                    $telefone,
                    $email,
                    $valor,
                    $retiro,
                    $chale,
                    $data){
+
         require_once '../controller/Pessoa_Controller.class.php';
         require_once '../beans/Pessoa.class.php';
+        require_once '../beans/Retiro.class.php';
         $pessoa = new Pessoa();
+        $retiroObj = new Retiro();
+        $retiroObj->setCdRetiro($retiro);
         $pc = new Pessoa_Controller();
 
         $pessoa->setNmPessoa(strtoupper($nome));
         $vowels = array(".", "-");
-        $novocpf = str_replace($vowels,'-',$cpf);
+        $novocpf = str_replace($vowels,'',$cpf);
         $vowels = array("(", ")","-"," ");
         $novotelefone = str_replace($vowels,"",$telefone);
         $pessoa->setNrCpf($novocpf);
@@ -101,6 +108,7 @@ function cadastrar($nome,
         $pessoa->setDsEmail($email);
         $pessoa->setValorCodigo($valor);
         $pessoa->setSnChale($chale);
+        $pessoa->setRetiro($retiroObj);
         $pessoa->setDtNascimento($data);
         $teste = $pc->inserir($pessoa);
 
@@ -125,6 +133,11 @@ function alterar($codigo,$nome,
                  $data){
     require_once '../controller/Pessoa_Controller.class.php';
     require_once '../beans/Pessoa.class.php';
+    require_once '../beans/Retiro.class.php';
+    $pessoa = new Pessoa();
+    $retiroObj = new Retiro();
+    $retiroObj->setCdRetiro($retiro);
+
     $pessoa = new Pessoa();
     $pc = new Pessoa_Controller();
     $pessoa->setCodigoPessoa($codigo);
@@ -138,6 +151,7 @@ function alterar($codigo,$nome,
     $pessoa->setDsEmail($email);
     $pessoa->setValorCodigo($valor);
     $pessoa->setSnChale($chale);
+    $pessoa->setRetiro($retiroObj);
     $pessoa->setDtNascimento($data);
     $teste = $pc->update($pessoa);
 
@@ -159,6 +173,23 @@ function excluir($codigo){
     $pc = new Pessoa_Controller();
 
     $teste = $pc->delete($codigo);
+    if($teste = true) {
+        echo json_encode(array('retorno' => 1));
+    }
+    else {
+        echo json_encode(array('retorno' => 0));
+    }
+
+}
+
+
+function desistente($codigo){
+    require_once '../controller/Pessoa_Controller.class.php';
+
+
+    $pc = new Pessoa_Controller();
+
+    $teste = $pc->inserirDesistente($codigo);
     if($teste = true) {
         echo json_encode(array('retorno' => 1));
     }

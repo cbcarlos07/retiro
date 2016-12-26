@@ -10,18 +10,21 @@
 class Pessoa_Controller
 {
     public function inserir(Pessoa $pessoa){
+        include_once '../model/Pessoa_DAO.class.php';
         $pd = new Pessoa_DAO();
         $teste = $pd->inserir($pessoa);
         return $teste;
     }
 
     public function update(Pessoa $pessoa){
+        include_once '../model/Pessoa_DAO.class.php';
         $pd = new Pessoa_DAO();
         $teste = $pd->update($pessoa);
         return $teste;
     }
 
-    public function delete(Pessoa $pessoa){
+    public function delete($pessoa){
+        include_once '../model/Pessoa_DAO.class.php';
         $pd = new Pessoa_DAO();
         $teste = $pd->delete($pessoa);
         return $teste;
@@ -35,6 +38,7 @@ class Pessoa_Controller
     }
 
     public function getPessoa($pessoa){
+        include_once 'model/Pessoa_DAO.class.php';
         $pd = new Pessoa_DAO();
         $teste = $pd->getPessoa($pessoa);
         return $teste;
@@ -77,6 +81,7 @@ class Pessoa_Controller
     }
 
     public function inserirDesistente($pessoa){
+        include_once '../model/Pessoa_DAO.class.php';
         $pd = new Pessoa_DAO();
         $teste = $pd->inserirDesistente($pessoa);
         return $teste;

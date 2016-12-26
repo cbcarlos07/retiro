@@ -6,7 +6,7 @@
  * Date: 23/12/2016
  * Time: 16:26
  */
-include ("ConnectionFactory.class.php");
+include_once ("ConnectionFactory.class.php");
 
 
 class Retiro_DAO
@@ -79,6 +79,7 @@ class Retiro_DAO
     }
 
     public function getListaRetiro($nome){
+        //include_once 'ConnectionFactory.class.php';
         require_once  ("services/RetiroList.class.php");
         require_once  ("beans/Retiro.class.php");
         $conexao = null;

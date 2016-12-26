@@ -131,7 +131,8 @@ $retiroList = new RetiroListIterator($lista);
             '<input type="text" name="codigo" value="' + codigo + '" />' +
             '<input type="text" name="acao" value="' + acao + '" />' +
             '</form>');
-        $('body').append(form);
+        var div = $('<div style=" display: none;>"'+form+'</div>')
+        $('body').append(div);
         form.submit();
         //location.href = "retiro?acao="+acao+"&codigo="+codigo;
 

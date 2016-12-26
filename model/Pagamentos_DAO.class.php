@@ -7,16 +7,16 @@
  * Time: 16:26
  */
 include ("ConnectionFactory.class.php");
-include ("../services/PagamentosList.class.php");
+
 class Pagamentos_DAO
 {
     private $conexao = null;
     public function inserir(Pagamentos $pagamentos){
         $conexao = null;
         $teste = false;
-        $this->p =  new ConnectionFactory();
+        $this->conexao =  new ConnectionFactory();
         $sql = "INSERT INTO PAGAMENTOS (CD_PESSOA, DS_VALOR, DT_PGTO)
-                 VALUES(?,?,?)";
+                 VALUES(:pessoa,:valor,:data_)";
         try {
             $datas = explode('/',$pagamentos->getValorData());
             $dia = $datas[0];
@@ -24,11 +24,11 @@ class Pagamentos_DAO
             $ano = $datas[2];
             $data = $ano.'-'.$mes.'-'.$dia;
             $stmt = $this->conexao->prepare($sql);
-            $stmt->bindValue(1,$pagamentos->getPessoa());
-            $stmt->bindValue(2, $pagamentos->getValorPgto());
-            $stmt->bindValue(3,$data);
+            $stmt->bindValue(":pessoa",$pagamentos->getPessoa()->getCodigoPessoa(), PDO::PARAM_INT);
+            $stmt->bindValue(":valor", $pagamentos->getValorPgto(), PDO::PARAM_STR);
+            $stmt->bindValue(":data_",$data, PDO::PARAM_STR);
             $stmt->execute();
-            $stmt.execute();
+
             $teste = true;
             $this->conexao = null;
         } catch (PDOException $ex) {
@@ -39,9 +39,9 @@ class Pagamentos_DAO
     public function update(Pagamentos $pagamentos){
         $conexao = null;
         $teste = false;
-        $this->p =  new ConnectionFactory();
-        $sql = "UPDATE PAGAMENTOS SET CD_PESSOA = ?, DS_VALOR = ?, DT_PGTO = ?
-                 WHERE CD_PGTO = ?";
+        $this->conexao =  new ConnectionFactory();
+        $sql = "UPDATE PAGAMENTOS SET CD_PESSOA = :pessoa, DS_VALOR = :valor, DT_PGTO = :data_
+                 WHERE CD_PGTO = :codigo";
         try {
             $datas = explode('/',$pagamentos->getDtPagamentos());
             $dia = $datas[0];
@@ -49,12 +49,12 @@ class Pagamentos_DAO
             $ano = $datas[2];
             $data = $ano.'-'.$mes.'-'.$dia;
             $stmt = $this->conexao->prepare($sql);
-            $stmt->bindValue(1,$pagamentos->getPessoa());
-            $stmt->bindValue(2, $pagamentos->getValorData());
-            $stmt->bindValue(4,$data);
-            $stmt->bindValue(4,$pagamentos->getCdPagamentos());
+            $stmt->bindValue(":pessoa",$pagamentos->getPessoa()->getCodigoPessoa(), PDO::PARAM_INT);
+            $stmt->bindValue(":valor", $pagamentos->getValorData(), PDO::PARAM_STR);
+            $stmt->bindValue(":data_",$data, PDO::PARAM_STR);
+            $stmt->bindValue(":codigo",$pagamentos->getCdPagamentos(), PDO::PARAM_INT);
             $stmt->execute();
-            $stmt.execute();
+
             $teste = true;
             $this->conexao = null;
         } catch (PDOException $ex) {
@@ -66,12 +66,12 @@ class Pagamentos_DAO
     public function delete($codigo){
         $conexao = null;
         $teste = false;
-        $this->p =  new ConnectionFactory();
-        $sql = "DELETE FROM PAGAMENTOS WHERE CD_PGTO = ?";
+        $this->conexao =  new ConnectionFactory();
+        $sql = "DELETE FROM PAGAMENTOS WHERE CD_PGTO = :CODIGO";
         try {
             $stmt = $this->conexao->prepare($sql);
-            $stmt->bindValue(1, $codigo);
-            $stmt.execute();
+            $stmt->bindValue(":CODIGO", $codigo, PDO::PARAM_INT);
+            $stmt->execute();
             $teste = true;
             $this->conexao = null;
         } catch (PDOException $ex) {
@@ -84,12 +84,12 @@ class Pagamentos_DAO
             $teste = false;
             $conexao = null;
             $teste = false;
-            $this->p =  new ConnectionFactory();
-            $sql = "DELETE FROM PAGAMENTOS  WHERE CD_PESSOA = ?";
+            $this->conexao =  new ConnectionFactory();
+            $sql = "DELETE FROM PAGAMENTOS  WHERE CD_PESSOA = :CODIGO";
             try {
                 $stmt = $this->conexao->prepare($sql);
-                $stmt->bindValue(1, $pagamentos);
-                $stmt.execute();
+                $stmt->bindValue(":CODIGO", $pagamentos, PDO::PARAM_INT);
+                $stmt->execute();
                 $teste = true;
                 $this->conexao = null;
 
@@ -103,26 +103,28 @@ class Pagamentos_DAO
 
 
     public function getListaPagamentos($nome, $pessoa){
-
+        require_once ("services/PagamentoList.class.php");
         $conexao = null;
 
-        $this->p =  new ConnectionFactory();
+        $this->conexao =  new ConnectionFactory();
 
-        $pagamentosList = new PagamentosList();
+        $pagamentosList = new PagamentoList();
 
         try {
-            if($nome.equals("")){
-                $sql = "SELECT * FROM PAGAMENTOS WHERE CD_PESSOA = ?";
+            if($nome == ""){
+                $sql = "SELECT * FROM PAGAMENTOS WHERE CD_PESSOA = :pessoa";
                 $stmt = $this->conexao->prepare($sql);
+                $stmt->bindValue(":pessoa", $pessoa, PDO::PARAM_INT);
 
             }else{
-                $sql = "SELECT * FROM PAGAMENTOS WHERE DS_VALOR LIKE ? AND CD_PESSOA = ?";
+                $sql = "SELECT * FROM PAGAMENTOS WHERE DS_VALOR LIKE :valor AND CD_PESSOA = :pessoa";
                 $stmt = $this->conexao->prepare($sql);
-                $stmt->bindValue(1, "%"+$nome+"%");
-                $stmt->bindValue(2, $pessoa);
+                $stmt->bindValue(":valor", "%$nome%", PDO::PARAM_STR);
+                $stmt->bindValue(":pessoa", $pessoa, PDO::PARAM_INT);
 
             }
-            while($row = $stmt->fetch(PDO::FETCH_OBJ)){
+            $stmt->execute();
+            while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
                 $pagamentos = new Pagamentos();
 
                 $pagamentos->setCdPgto($row['CD_PGTO']);
@@ -130,7 +132,7 @@ class Pagamentos_DAO
                 $pagamentos->setValorPgto($row['DS_VALOR']);
                 $pagamentos->setValorData($row['DT_PGTO']);
 
-                $pagamentosList->addPagamentos($pagamentos);
+                $pagamentosList->addPagamento($pagamentos);
             }
             $this->conexao = null;
         } catch (PDOException $ex) {
@@ -141,25 +143,29 @@ class Pagamentos_DAO
     }
 
     public function getPagamentos($codigo){
+        require_once 'beans/Pessoa.class.php';
         $pagamentos = null;
         $conexao = null;
 
-        $this->p =  new ConnectionFactory();
+        $this->conexao =  new ConnectionFactory();
 
-        $sql = "SELECT * FROM GASTOS WHERE CD_GASTO = ?";
+        $sql = "SELECT * FROM PAGAMENTOS WHERE CD_PGTO = :CODIGO";
 
         try {
             $stmt = $this->conexao->prepare($sql);
-            $stmt->bindValue(1, $codigo);
+            $stmt->bindValue(":CODIGO", $codigo, PDO::PARAM_INT);
+            $stmt->execute();
+            if($row =  $stmt->fetch(PDO::FETCH_ASSOC)){
 
-            if($row =  $stmt->fetch(PDO::FETCH_OBJ)){
                 $pagamentos = new Pagamentos();
 
-                $pagamentos->setCdPagamentos($row['CD_GASTO']);
-                $pagamentos->setDsPagamentos($row['DS_GASTO']);
-                $pagamentos->setObsPagamentos($row['OBS_GASTO']);
-                $pagamentos->setValorPagamentos($row['VALOR_GASTO']);
-                $pagamentos->setDtPagamentos($row['DT_GASTO']);
+                $pagamentos->setCdPgto($row['CD_PGTO']);
+                $pagamentos->setValorPgto($row['DS_VALOR']);
+                $pagamentos->setValorData($row['DT_PGTO']);
+                $pessoa = new Pessoa();
+                $pessoa->setCodigoPessoa($row['CD_PESSOA']);
+                $pagamentos->setPessoa($pessoa);
+
 
             }
             $this->conexao = null;

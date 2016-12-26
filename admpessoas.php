@@ -43,7 +43,7 @@ $pessoaList = new PessoaListIterator($lista);
 <?php include 'include/menu.php' ?>
 <div class="container main">
     <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-        <form action="pessoa" method="post" id="form-pesquisa">
+        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" id="form-pesquisa">
             <input type="hidden" name="acao" value="P">
             <div class="input-group h2">
                 <input  name="search"  id="search" class="form-control">
@@ -77,11 +77,13 @@ $pessoaList = new PessoaListIterator($lista);
             </thead>
             <tbody>
             <?php
+
               $pagar = 0;
               $falta = 0;
               $pago = 0;
               $chale = 0;
               $registro = 0;
+
               while($pessoaList->hasNextPessoa()){
                   $registro++;
                   $pessoa = $pessoaList->getNextPessoa();
@@ -93,20 +95,20 @@ $pessoaList = new PessoaListIterator($lista);
                   }
              ?>
                   <tr>
-                      <td><?php $pessoa->getCodigoPessoa(); ?></td>
-                      <td><?php $pessoa->getNmPessoa(); ?></td>
-                      <td><?php $pessoa->getNrCpf(); ?></td>
+                      <td><?php echo $pessoa->getCodigoPessoa(); ?></td>
+                      <td><?php echo $pessoa->getNmPessoa(); ?></td>
+                      <td><?php echo $pessoa->getNrCpf(); ?></td>
                       <td><?php echo 'R$ '.number_format($pessoa->getValorPagar(),2,',','.'); ?></td>
                       <td><?php echo 'R$ '.number_format($pessoa->getValorFalta(),2,',','.'); ?></td>
                       <td><?php echo 'R$ '.number_format($pessoa->getValorPago(),2,',','.'); ?></td>
-                      <td>${pessoa.sn_chale}</td>
+                      <td><?php $pessoa->getSnChale(); ?></td>
                       <td class="actions">
 
-                          <a class="btn btn-warning btn-xs action-button" href="#" data-nome="B" data-id="<?php $pessoa->getCodigoPessoa(); ?>">Editar</a>
-                          <a class="delete btn btn-danger btn-xs" href="#" data-toggle="modal" data-target="#delete-modal" data-nome="<?php $pessoa->getNmPessoa(); ?>" data-id="<?php $pessoa->getCodigoPessoa(); ?>" data-action="E">Excluir</a>
-                          <a class="delete btn btn-default btn-xs" href="#" data-toggle="modal" data-target="#delete-modal" data-nome="<?php $pessoa->getNmPessoa(); ?>" data-id="<?php $pessoa->getCodigoPessoa(); ?>" data-action="D">Desistente</a>
+                          <a class="btn btn-warning btn-xs action-button" href="#" data-nome="B" data-url="altpessoa.php" data-id="<?php echo $pessoa->getCodigoPessoa(); ?>">Editar</a>
+                          <a class="delete btn btn-danger btn-xs" href="#" data-toggle="modal" data-target="#delete-modal" data-nome="<?php echo $pessoa->getNmPessoa(); ?>" data-id="<?php echo $pessoa->getCodigoPessoa(); ?>" data-action="E">Excluir</a>
+                          <a class="delete btn btn-default btn-xs" href="#" data-toggle="modal" data-target="#delete-modal" data-nome="<?php echo $pessoa->getNmPessoa(); ?>" data-id="<?php echo $pessoa->getCodigoPessoa(); ?>" data-action="D">Desistente</a>
                           <a class="btn btn-success btn-xs" href="imprimir?acao=F&codigo=<?php $pessoa->getCodigoPessoa(); ?>">Imprimir</a>
-                          <a class="btn btn-primary btn-xs" href="pagamento?codigo=<?php $pessoa->getCodigoPessoa(); ?>">Pagamentos</a>
+                          <a class="btn btn-primary btn-xs action-button" href="#" data-nome="<?php echo $pessoa->getNmPessoa(); ?>" data-url="admpgto.php" data-id="<?php echo $pessoa->getCodigoPessoa(); ?>" ">Pagamentos</a>
                       </td>
                   </tr>
             <?php
@@ -154,14 +156,17 @@ $pessoaList = new PessoaListIterator($lista);
     $('.action-button').on('click', function(){
         var acao = $(this).data('nome'); // vamos buscar o valor do atributo data-name que temos no botão que foi clicado
         var codigo = $(this).data('id');
-        location.href = "pessoa?acao="+acao+"&codigo="+codigo;
-        //var email = $(this).data('email');
-        // $('#alvo').val(nome);
-        //console.log("Arquivo para envio: "+nome)
-        //$('span.email').text(email);
-        //document.querySelector("[name='email']").value = email;
+        var url = $(this).data('url');
 
-        //$('#myModal').modal('show'); // modal aparece
+        console.log('Codigo: '+codigo);
+        var form = $('<form action="' + url + '" method="post">' +
+            '<input type="text" name="codigo" value="' + codigo + '" />' +
+            '<input type="text" name="acao" value="' + acao + '" />' +
+            '</form>');
+        var div = $('<div style="display: none;>"'+form+'</div>');
+        $('body').append(div);
+        form.submit();
+
     });
 </script>
 <script src="js/menu-acao.js"></script>
