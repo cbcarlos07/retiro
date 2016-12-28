@@ -28,9 +28,10 @@ function novo(){
         //var cracha = $('#cracha').value;
         //alert("Acao: "+acao);    
         //console.log("Usuario: "+usuario+" Senha: "+senha);    
-        jQuery.ajax({
+        $.ajax({
+                dataType: 'json',
                 type: "POST",
-                url: "gasto",
+                url: "funcoes/gasto.php",
                 beforeSend: carregando,
                 data: {
                     'codigo'     : codigo,
@@ -42,9 +43,6 @@ function novo(){
                 },
                 success: function( data )
                 {
-                    //var retorno = data.retorno;
-                    //alert(retorno);
-
                     console.log("Data: "+data.retorno);
                     //console.log("Mensagem: "+data.mensagem);
                     
@@ -64,9 +62,10 @@ function novo(){
     
     function excluir(codigo){
         
-        jQuery.ajax({
+        $.ajax({
+                dataType: 'json',
                 type: "POST",
-                url: "gasto",
+                url: "funcoes/gasto.php",
                 beforeSend: carregando,
                 
                 data: {
@@ -78,8 +77,8 @@ function novo(){
                     //var retorno = data.retorno;
                     //alert(retorno);
 
-                    console.log("Excluir: "+data);
-                    if(data == 1){
+                    console.log("Excluir: "+data.retorno);
+                    if(data.retorno == 1){
                         //sucesso();
                         console.log("Excluido com sucesso")
                         $('#delete-modal').modal('hide');
@@ -88,7 +87,7 @@ function novo(){
                         //$('.list-group-item').remove();
                        //$(a.delete).remove();
                         
-                    }else if(data == 0){
+                    }else if(data.retorno == 0){
                         console.log("Nao conseguiu excluir");
                         errosend('N&atilde;o foi poss&iacute;vel excluir');
                     }
@@ -120,8 +119,7 @@ function sucesso(msg){
         var mensagem = $('.mensagem');
         mensagem.empty().html('<p class="alert alert-success"><strong>OK. </strong>'+msg+'<img src="img/ok.png" alt="Carregando..."></p>').fadeIn("fast");                
         setTimeout(function (){
-            history.back();
-            self.location.reload();
+            location.href = "admgasto.php";
         },1000);
         
         //window.setTimeout()

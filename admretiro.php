@@ -2,6 +2,7 @@
 
 
 <?php
+include 'include/sessao.php';
 $nome = "";
 if(isset($_POST['search'])){
     $nome = $_POST['search'];

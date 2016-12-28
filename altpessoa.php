@@ -1,4 +1,5 @@
 <?php
+include 'include/sessao.php';
 require_once 'controller/Pessoa_Controller.class.php';
 require_once 'beans/Pessoa.class.php';
 $codigo = $_POST['codigo'];

@@ -11,23 +11,23 @@
  *
  * @author carlos.brito
  */
-include ("ConnectionFactory.class.php");
-include ("../services/UsuarioList.class.php");
+
 class Usuario_DAO {
         private $conexao = null;
   public function inserir(Usuario $usuario){
+         require_once 'ConnectionFactory.class.php';
          $conexao = null;
          $teste = false;
          $this->conexao =  new ConnectionFactory();
          $sql = "INSERT INTO USUARIO (NM_USUARIO, DS_LOGIN, DS_SENHA, SN_ATUAL)
-                 VALUES(?,?,MD5(?),'N')";
+                 VALUES(:nome,:login,MD5(:senha),'N')";
         try {
             $stmt = $this->conexao->prepare($sql);
-            $stmt->bindValue(1,$usuario->getNm_usuario());
-            $stmt->bindValue(2, $usuario->getDs_login());
-            $stmt->bindValue(3,$usuario->getDs_senha());
+            $stmt->bindValue(":nome",$usuario->getNm_usuario(), PDO::PARAM_STR);
+            $stmt->bindValue(":login", $usuario->getDs_login(), PDO::PARAM_STR);
+            $stmt->bindValue(":senha",$usuario->getDs_senha(), PDO::PARAM_STR);
             $stmt->execute();
-            stmt.execute();
+
             $teste = true;
             $this->conexao = null;
         } catch (PDOException $ex) {
@@ -37,21 +37,22 @@ class Usuario_DAO {
     }
 
     public function update(Usuario $usuario){
+        require_once 'ConnectionFactory.class.php';
         $conexao = null;
 
         $teste = false;
         $this->conexao =  new ConnectionFactory();
-        $sql = "UPDATE USUARIO SET NM_USUARIO = ?, DS_LOGIN = ?, DS_SENHA = MD5(?), SN_ATUAL = ?
-                 WHERE CD_USUARIO = ?";
+        $sql = "UPDATE USUARIO SET NM_USUARIO = :nome, DS_LOGIN = :login, DS_SENHA = MD5(:senha), SN_ATUAL = :atual
+                 WHERE CD_USUARIO = :codigo";
         try {
             $stmt = $this->conexao->prepare($sql);
-            $stmt->bindValue(1, $usuario->getNm_usuario());
-            $stmt->bindValue(2, $usuario->getDs_login());
-            $stmt->bindValue(3, $usuario->getDs_senha());
-            $stmt->bindValue(4, $usuario->getSn_atual());
-            $stmt->bindValue(5, $usuario->getCd_usuario());
+            $stmt->bindValue(":nome", $usuario->getNm_usuario(), PDO::PARAM_STR);
+            $stmt->bindValue(":login", $usuario->getDs_login(), PDO::PARAM_STR);
+            $stmt->bindValue(":senha", $usuario->getDs_senha(), PDO::PARAM_STR);
+            $stmt->bindValue("atual", $usuario->getSn_atual(), PDO::PARAM_STR);
+            $stmt->bindValue("codigo", $usuario->getCd_usuario(), PDO::PARAM_INT);
 
-            $stmt.execute();
+            $stmt->execute();
             $teste = true;
             $this->conexao = null;
         } catch (PDOException $ex) {
@@ -61,15 +62,16 @@ class Usuario_DAO {
     }
 
     public function resetarSenha($usuario){
+        require_once 'ConnectionFactory.class.php';
         $conexao = null;
         $teste = false;
         $this->conexao =  new ConnectionFactory();
         $sql = "UPDATE USUARIO SET DS_SENHA = MD5(123456), SN_ATUAL = 'N' 
-                WHERE CD_USUARIO = ?";
+                WHERE CD_USUARIO = :codigo";
         try {
             $stmt = $this->conexao->prepare($sql);
-            $stmt->bindValue(1, $usuario);
-            $stmt.execute();
+            $stmt->bindValue(":codigo", $usuario, PDO::PARAM_STR);
+            $stmt->execute();
             $teste = true;
             $this->conexao = null;
         } catch (PDOException $ex) {
@@ -79,15 +81,16 @@ class Usuario_DAO {
     }
 
     public function delete($user){
+        require_once 'ConnectionFactory.class.php';
         $conexao = null;
         $teste = false;
         $this->conexao =  new ConnectionFactory();
         $sql = "DELETE FROM USUARIO 
-                 WHERE CD_USUARIO = ?";
+                 WHERE CD_USUARIO = :codigo";
         try {
             $stmt = $this->conexao->prepare($sql);
-            $stmt->bindValue(1, $user);
-            $stmt.execute();
+            $stmt->bindValue(":codigo", $user, PDO::PARAM_STR);
+            $stmt->execute();
             $teste = true;
             $this->conexao = null;
         } catch (PDOException $ex) {
@@ -97,7 +100,9 @@ class Usuario_DAO {
     }
 
     public function getListaUsuario($nome){
-            
+        require_once 'ConnectionFactory.class.php';
+        require_once 'services/UsuarioList.class.php';
+
         $conexao = null;
 
         $this->conexao =  new ConnectionFactory();
@@ -105,17 +110,18 @@ class Usuario_DAO {
         $usuarioList = new UsuarioList();
 
         try {
-            if($nome.equals("")){
+            if($nome == ""){
                 $sql = "SELECT * FROM USUARIO";
                 $stmt = $this->conexao->prepare($sql);
 
             }else{
-                $sql = "SELECT * FROM USUARIO WHERE NM_USUARIO LIKE ?";
+                $sql = "SELECT * FROM USUARIO WHERE NM_USUARIO LIKE :nome";
                 $stmt = $this->conexao->prepare($sql);
-                $stmt->bindValue(1, "%"+$nome+"%");
+                $stmt->bindValue(":nome", "%$nome%", PDO::PARAM_STR);
 
             }
-           while($row = $stmt->fetch(PDO::FETCH_OBJ)){
+            $stmt->execute();
+           while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
                $usuario = new Usuario();
 
                $usuario->setCd_usuario($row['CD_USUARIO']);
@@ -133,6 +139,7 @@ class Usuario_DAO {
 
 
     public function getUsuario($codigo){
+        require_once 'ConnectionFactory.class.php';
         include_once 'beans/Usuario.class.php';
         $usuario = null;
         $conexao = null;
@@ -145,16 +152,14 @@ class Usuario_DAO {
             $stmt = $this->conexao->prepare($sql);
             $stmt->bindValue("codigo", $codigo,PDO::PARAM_INT);
             $stmt->execute();
-            $row = $stmt->fetch();
 
-            if($row>0){
+
+            if($row = $stmt->fetch(PDO::FETCH_ASSOC)){
                 $usuario = new Usuario();
                 $usuario->setCd_usuario($row['CD_USUARIO']);
                 $usuario->setNm_usuario($row['NM_USUARIO']);
                 $usuario->setDs_login($row['DS_LOGIN']);
                 $usuario->setSn_atual($row['SN_ATUAL']);
-            }else{
-                echo "Nao achou";
             }
             $this->conexao = null;
         } catch (PDOException $ex) {
@@ -165,6 +170,7 @@ class Usuario_DAO {
     }
 
     public function getUser($login, $senha){
+        require_once 'ConnectionFactory.class.php';
         $usuario = null;
         $conexao = null;
 
@@ -177,13 +183,10 @@ class Usuario_DAO {
             $stmt->bindValue(":login", $login, PDO::PARAM_STR);
             $stmt->bindValue(":senha", $senha, PDO::PARAM_STR);
             $stmt->execute();
-            $rs = $stmt->fetch();
+
            // $row =  $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if($rs > 0){
-              //  echo "Encontrou no dao getUser ";
-              //  var_dump($rs);
-
+            if($rs = $stmt->fetch(PDO::FETCH_ASSOC)){
                     
                     $usuario = new Usuario();
                     $usuario->setCd_usuario($rs["CD_USUARIO"]);
@@ -192,8 +195,6 @@ class Usuario_DAO {
                     $usuario->setSn_atual($rs["SN_ATUAL"]);
                    // echo "Encontrou no dao getUser";
 
-            }else{
-               // echo "<br>Nao encontrado<br>";
             }
 
 
@@ -203,5 +204,75 @@ class Usuario_DAO {
         }
 
         return $usuario;
+    }
+
+    public function snLogar($login, $senha){
+        require_once 'ConnectionFactory.class.php';
+        $teste = false;
+        $usuario = null;
+        $conexao = null;
+
+        $this->conexao =  new ConnectionFactory();
+
+        $sql = "SELECT * FROM USUARIO U WHERE U.DS_LOGIN = :login AND DS_SENHA = MD5(:senha);";
+
+        try {
+            $stmt = $this->conexao->prepare($sql);
+            $stmt->bindValue(":login", $login, PDO::PARAM_STR);
+            $stmt->bindValue(":senha", $senha, PDO::PARAM_STR);
+            $stmt->execute();
+
+            // $row =  $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if($rs = $stmt->fetch(PDO::FETCH_ASSOC)){
+
+
+                $teste = true;
+                // echo "Encontrou no dao getUser";
+
+            }
+
+
+            $this->conexao = null;
+        } catch (PDOException $ex) {
+            echo "Erro: ".$ex->getMessage();
+        }
+
+        return $teste;
+    }
+
+    public function recSnAtual($login, $senha){
+        require_once 'ConnectionFactory.class.php';
+        $teste = "";
+        $usuario = null;
+        $conexao = null;
+
+        $this->conexao =  new ConnectionFactory();
+
+        $sql = "SELECT * FROM USUARIO U WHERE U.DS_LOGIN = :login AND DS_SENHA = MD5(:senha);";
+
+        try {
+            $stmt = $this->conexao->prepare($sql);
+            $stmt->bindValue(":login", $login, PDO::PARAM_STR);
+            $stmt->bindValue(":senha", $senha, PDO::PARAM_STR);
+            $stmt->execute();
+
+            // $row =  $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+
+
+                $teste = $row['SN_ATUAL'];
+                // echo "Encontrou no dao getUser";
+
+            }
+
+
+            $this->conexao = null;
+        } catch (PDOException $ex) {
+            echo "Erro: ".$ex->getMessage();
+        }
+
+        return $teste;
     }
 }

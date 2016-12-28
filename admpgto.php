@@ -1,4 +1,5 @@
 <?php
+include 'include/sessao.php';
 require_once 'controller/Pagamentos_Controller.class.php';
 require_once 'beans/Pagamentos.class.php';
 require_once 'services/PagamentosListIterator.class.php';

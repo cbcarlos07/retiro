@@ -6,17 +6,18 @@
  * Date: 23/12/2016
  * Time: 16:26
  */
-include ("ConnectionFactory.class.php");
-include ("../services/GastoList.class.php");
+//include ("ConnectionFactory.class.php");
+//include ("../services/GastoList.class.php");
 class Gasto_DAO
 {
     private $conexao = null;
     public function inserir(Gasto $gasto){
+        require_once ("ConnectionFactory.class.php");
         $conexao = null;
         $teste = false;
-        $this->p =  new ConnectionFactory();
+        $this->conexao =  new ConnectionFactory();
         $sql = "INSERT INTO GASTOS (DS_GASTO, OBS_GASTO, VALOR_GASTO, DT_GASTO)
-                 VALUES(?,?,?,?)";
+                 VALUES(:descricao,:obs,:valor,:data_)";
         try {
             $datas = explode('/',$gasto->getDtGasto());
             $dia = $datas[0];
@@ -24,12 +25,12 @@ class Gasto_DAO
             $ano = $datas[2];
             $data = $ano.'-'.$mes.'-'.$dia;
             $stmt = $this->conexao->prepare($sql);
-            $stmt->bindValue(1,$gasto->getDtGasto());
-            $stmt->bindValue(2, $gasto->getObsGasto());
-            $stmt->bindValue(3,$gasto->getValorGasto());
-            $stmt->bindValue(4,$data);
+            $stmt->bindValue(":descricao",$gasto->getDsGasto(), PDO::PARAM_STR);
+            $stmt->bindValue(":obs", $gasto->getObsGasto(), PDO::PARAM_STR);
+            $stmt->bindValue(":valor",$gasto->getValorGasto(), PDO::PARAM_STR);
+            $stmt->bindValue(":data_",$data, PDO::PARAM_STR);
             $stmt->execute();
-            $stmt.execute();
+
             $teste = true;
             $this->conexao = null;
         } catch (PDOException $ex) {
@@ -38,11 +39,12 @@ class Gasto_DAO
         return $teste;
     }
     public function update(Gasto $gasto){
+        require_once ("ConnectionFactory.class.php");
         $conexao = null;
         $teste = false;
-        $this->p =  new ConnectionFactory();
-        $sql = "UPDATE GASTOS SET DS_GASTO = ?, OBS_GASTO = ?, VALOR_GASTO = ?, DT_GASTO = ?
-                 WHERE CD_GASTO = ?";
+        $this->conexao =  new ConnectionFactory();
+        $sql = "UPDATE GASTOS SET DS_GASTO = :descricao, OBS_GASTO = :obs, VALOR_GASTO = :valor, DT_GASTO = :data_
+                 WHERE CD_GASTO = :codigo";
         try {
             $datas = explode('/',$gasto->getDtGasto());
             $dia = $datas[0];
@@ -50,13 +52,13 @@ class Gasto_DAO
             $ano = $datas[2];
             $data = $ano.'-'.$mes.'-'.$dia;
             $stmt = $this->conexao->prepare($sql);
-            $stmt->bindValue(1,$gasto->getDtGasto());
-            $stmt->bindValue(2, $gasto->getObsGasto());
-            $stmt->bindValue(3,$gasto->getValorGasto());
-            $stmt->bindValue(4,$data);
-            $stmt->bindValue(4,$gasto->getCdGasto());
+            $stmt->bindValue(":descricao",$gasto->getDsGasto(), PDO::PARAM_STR);
+            $stmt->bindValue(":obs", $gasto->getObsGasto(), PDO::PARAM_STR);
+            $stmt->bindValue(":valor",$gasto->getValorGasto(), PDO::PARAM_STR);
+            $stmt->bindValue(":data_",$data, PDO::PARAM_STR);
+            $stmt->bindValue(":codigo",$gasto->getCdGasto(), PDO::PARAM_INT);
             $stmt->execute();
-            $stmt.execute();
+
             $teste = true;
             $this->conexao = null;
         } catch (PDOException $ex) {
@@ -66,15 +68,16 @@ class Gasto_DAO
     }
 
     public function delete($codigo){
+        require_once ("ConnectionFactory.class.php");
         $conexao = null;
         $teste = false;
-        $this->p =  new ConnectionFactory();
+        $this->conexao =  new ConnectionFactory();
         $sql = "DELETE FROM GASTOS 
-                 WHERE CD_GASTO = ?";
+                 WHERE CD_GASTO = :codigo";
         try {
             $stmt = $this->conexao->prepare($sql);
-            $stmt->bindValue(1, $codigo);
-            $stmt.execute();
+            $stmt->bindValue(":codigo", $codigo, PDO::PARAM_INT);
+            $stmt->execute();
             $teste = true;
             $this->conexao = null;
         } catch (PDOException $ex) {
@@ -85,24 +88,27 @@ class Gasto_DAO
 
     public function getListaGasto($nome){
 
+        require_once ("ConnectionFactory.class.php");
+        require_once ("services/GastoList.class.php");
         $conexao = null;
 
-        $this->p =  new ConnectionFactory();
+        $this->conexao =  new ConnectionFactory();
 
         $gastoList = new GastoList();
 
         try {
-            if($nome.equals("")){
+            if($nome == ""){
                 $sql = "SELECT * FROM GASTOS";
                 $stmt = $this->conexao->prepare($sql);
 
             }else{
-                $sql = "SELECT * FROM GASTOS WHERE DS_GASTO LIKE ?";
+                $sql = "SELECT * FROM GASTOS WHERE DS_GASTO LIKE :nome";
                 $stmt = $this->conexao->prepare($sql);
-                $stmt->bindValue(1, "%"+$nome+"%");
+                $stmt->bindValue(":nome", "%$nome%", PDO::PARAM_STR);
 
             }
-            while($row = $stmt->fetch(PDO::FETCH_OBJ)){
+            $stmt->execute();
+            while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
                 $gasto = new Gasto();
 
                 $gasto->setCdGasto($row['CD_GASTO']);
@@ -121,18 +127,19 @@ class Gasto_DAO
     }
 
     public function getGasto($codigo){
+        require_once ("ConnectionFactory.class.php");
         $gasto = null;
         $conexao = null;
 
-        $this->p =  new ConnectionFactory();
+        $this->conexao =  new ConnectionFactory();
 
-        $sql = "SELECT * FROM GASTOS WHERE CD_GASTO = ?";
+        $sql = "SELECT * FROM GASTOS WHERE CD_GASTO = :codigo";
 
         try {
             $stmt = $this->conexao->prepare($sql);
-            $stmt->bindValue(1, $codigo);
-
-            if($row =  $stmt->fetch(PDO::FETCH_OBJ)){
+            $stmt->bindValue(":codigo", $codigo, PDO::PARAM_INT);
+            $stmt->execute();
+            if($row =  $stmt->fetch(PDO::FETCH_ASSOC)){
                 $gasto = new Gasto();
 
                 $gasto->setCdGasto($row['CD_GASTO']);

@@ -13,6 +13,18 @@ $(".menu-retiro").on('click', function(){
     else if(acao == 'pessoa'){
         address = "admpessoas.php";
         
+    }else if(acao == 'gasto'){
+        address = "admgasto.php"
+    }
+    else if(acao == 'desistente'){
+        address = "admdesistente.php"
+    }
+    else if(acao == 'total'){
+        address = "admtotais.php"
+    }
+    else if(acao == 'usuario'){
+        //alert('Usuario');
+        address = "admusuario.php"
     }
 
     var url = address;

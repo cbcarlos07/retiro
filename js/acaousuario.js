@@ -23,20 +23,22 @@ function novo(){
         var senha = document.getElementById("senha").value;   
         var atual = document.getElementById("atual").value;   
         var acao = document.getElementById("acao").value;
-        
-        console.log("Acao: "+acao);
-        //var cracha = $('#cracha').value;
-        //alert("Acao: "+acao);    
-        //console.log("Usuario: "+usuario+" Senha: "+senha);    
-        jQuery.ajax({
+            console.log("Acao: "+acao);
+            //var cracha = $('#cracha').value;
+            //alert("Acao: "+acao);
+            //console.log("Usuario: "+usuario+" Senha: "+senha);
+
+            //console.log("Senha tem 6 ou mais digitos");
+            $.ajax({
+                dataType: 'json',
                 type: "POST",
-                url: "usuario",
+                url: "funcoes/usuario.php",
                 beforeSend: carregando,
                 data: {
                     'codigo'     : codigo,
                     'nome'       : nome,
                     'login'      : login,
-                    'senha'      : senha,  
+                    'senha'      : senha,
                     'atual'      : atual,
                     'acao'      : acao
                 },
@@ -47,19 +49,22 @@ function novo(){
 
                     console.log("Data: "+data.retorno);
                     //console.log("Mensagem: "+data.mensagem);
-                    
+                  //  alert("Retorno: "+data.retorno);
                     if(data.retorno == 1){
                         sucesso('Opera&ccedil;&atilde;o realizada com sucesso!');
-                      }
+                    }
                     else if(data.retorno == 0){
                         sucessoalt('Opera&ccedil;&atilde;o realizada com sucesso!');
                     }
                     else{
                         errosend(' N&atilde;o foi poss&iacute;vel realizar opera&ccedil;&atilde;o. Verifique se todos os campos est&atilde;o preenchidos');
-                        
-                   }
+
+                    }
                 }
-        });
+            });
+
+
+
 
         return false;
         });
@@ -67,9 +72,10 @@ function novo(){
     
     function excluir_user(codigo){
         
-        jQuery.ajax({
+        $.ajax({
+                dataType: 'json',
                 type: "POST",
-                url: "usuario",
+                url: "funcoes/usuario.php",
                 beforeSend: carregando,
                 
                 data: {
@@ -81,8 +87,8 @@ function novo(){
                     //var retorno = data.retorno;
                     //alert(retorno);
 
-                    console.log("Excluir: "+data);
-                    if(data == 1){
+                    console.log("Excluir: "+data.retorno);
+                    if(data.retorno == 1){
                         //sucesso();
                         console.log("Excluido com sucesso usuario")
                         $('#delete-modal').modal('hide');
@@ -91,7 +97,7 @@ function novo(){
                         //$('.list-group-item').remove();
                        //$(a.delete).remove();
                         
-                    }else if(data == 0){
+                    }else if(data.retorno == 0){
                         console.log("Nao conseguiu excluir");
                         errosend('N&atilde;o foi poss&iacute;vel excluir');
                     }
@@ -134,7 +140,7 @@ function sucesso(msg){
         var mensagem = $('.mensagem');
         mensagem.empty().html('<p class="alert alert-success"><strong>OK. </strong>'+msg+'<img src="img/ok.png" alt="Carregando..."></p>').fadeIn("fast");                
         setTimeout(function (){
-            location.href = "usuario";
+            location.href = "admusuario.php";
         },1000);
         
         //window.setTimeout()

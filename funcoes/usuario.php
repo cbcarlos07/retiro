@@ -5,21 +5,38 @@
  * Date: 25/12/2016
  * Time: 00:23
  */
-error_reporting(E_ALL & ~ E_NOTICE);// para nao mostrar undefined variable
-header('Access-Control-Allow-Origin: *');
-include ('../controller/Usuario_Controller.php');
-include ('../beans/Usuario.class.php');
-$uc = new Usuario_Controller();
-$usuario = new Usuario();
-$acao = $_POST['acao'];
 
-$login = $_POST['usuario'];
-$senha = $_POST['senha'];
-$codigo = 0;
+$acao = $_POST['acao'];
 $nome = "";
+$codigo = 0;
+$login = "";
+$senha = "";
+$atual = 0;
+$nome = "";
+$lembrar = "";
 //echo "Usuario";
+
+if(isset($_POST['login'])){
+    $login = $_POST['login'];
+}
+if(isset($_POST['senha'])){
+    $senha = $_POST['senha'];
+}
+
+if(isset($_POST['atual'])){
+    $atual = $_POST['atual'];
+}
+
+if(isset($_POST['codigo'])){
+    $codigo = $_POST['codigo'];
+}
+
+
 if(isset($_POST['nome'])){
     $nome = $_POST['nome'];
+}
+if(isset($_POST['lembrar'])){
+    $lembrar = $_POST['lembrar'];
 }
 if(isset($_POST['codigo'])) {
     $codigo = $_POST['codigo'];
@@ -27,7 +44,7 @@ if(isset($_POST['codigo'])) {
 
     switch ($acao){
         case 'L': //login
-                login($login, $senha);
+                login($login, $senha, $lembrar);
             break;
         case 'C': //senha
                 cadastrar($nome, $login,$senha);
@@ -35,16 +52,18 @@ if(isset($_POST['codigo'])) {
         case 'E':
             excluir($codigo);
             break;
+        case 'A':
+            alterar($codigo, $nome, $login,$senha, $atual);
+            break;
 
         }
 
 
-function login($login, $senha){
-
+function login($login, $senha, $lembrar){
+    require_once '../beans/Usuario.class.php';
+    require_once '../controller/Usuario_Controller.php';
     $uc = new Usuario_Controller();
-    $login = $_POST["usuario"];
-    $senha = $_POST["senha"];
-    $lembrar = $_POST["lembrar"];
+
 
     $usuario = $uc->getUser($login, $senha);
 
@@ -83,9 +102,12 @@ function login($login, $senha){
 }
 
 function cadastrar($nome, $login, $senha){
+    require_once '../beans/Usuario.class.php';
+    require_once '../controller/Usuario_Controller.php';
+    //echo "Cadastrar";
     $usuario = new Usuario();
     $uc = new Usuario_Controller();
-    $usuario->setNm_usuario($nome);
+    $usuario->setNm_usuario(strtoupper($nome));
     $usuario->setDs_login($login);
     $usuario->setDs_senha($senha);
 
@@ -98,13 +120,35 @@ function cadastrar($nome, $login, $senha){
     }
 }
 
+function alterar($codigo, $nome, $login, $senha, $atual){
+   // echo "Alterar<br>";
+    require_once '../beans/Usuario.class.php';
+    require_once '../controller/Usuario_Controller.php';
+    $usuario = new Usuario();
+    $uc = new Usuario_Controller();
+    $usuario->setCd_usuario($codigo);
+    $usuario->setNm_usuario(strtoupper($nome));
+    $usuario->setDs_login($login);
+    $usuario->setDs_senha($senha);
+    $usuario->setSn_atual($atual);
+
+    $teste = $uc->update($usuario);
+    if($teste){
+        echo json_encode(array('retorno' => 1));
+
+    }else{
+        echo json_encode(array('retorno' => 0));
+    }
+}
+
 function excluir($codigo){
+    require_once '../controller/Usuario_Controller.php';
     $uc = new Usuario_Controller();
     $teste = $uc->delete($codigo);
     if($teste){
-        echo "1";
+        echo json_encode(array('retorno' => 1));
      }else {
-        echo "0";
+        echo json_encode(array('retorno' => 0));
     }                       
 }
 
@@ -113,26 +157,22 @@ function excluir($codigo){
  * @param $senha
  */
 function searchUser($login, $senha){
-   
-    $uc = new Usuario_Controller();
-    $user = $uc->getUser($login, $senha);
 
-    try{
-        $user = $uc->getUser($login, $senha);
-        $user->getSn_atual();
-        return true;
-    }catch (Exception $e){return false;}
+    require_once '../controller/Usuario_Controller.php';
+    $uc = new Usuario_Controller();
+
+    $teste = $uc->snLogar($login, $senha);
+    return $teste;
+   // echo "Login: ".$user->getSn_atual();
 }
 
  function sn_atual($login, $senha){
+     require_once '../beans/Usuario.class.php';
+     require_once '../controller/Usuario_Controller.php';
         $usuario = new Usuario();
         $uc = new Usuario_Controller();
-        $usuario = $uc->getUser($login, $senha);
-        $current = "";
-        try{
-            $current = $usuario->getSn_atual();
-        }catch(Exception $e){
+        $current = $uc->recSnAtual($login, $senha);
 
-    }
+
         return $current;
     }

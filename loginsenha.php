@@ -1,5 +1,5 @@
 <?php
-  session_start();
+  include 'include/sessao.php';
   $codigo = $_POST['codigo'];
 
   include('controller/Usuario_Controller.php');
@@ -50,7 +50,7 @@
                                placeholder="digite o nome"/>
                         <div class="col-lg-10">
                             <label for="login">Login</label>
-                            <input  id="login" name="login" class="form-control" required="" value="<?php echo $usuario->getNm_usuario(); ?>"
+                            <input  id="login" name="login" class="form-control" required="" value="<?php echo $usuario->getDs_login(); ?>"
                                     placeholder="Digite o login" disabled=""/>
                         </div>
                         <div class="row"></div>

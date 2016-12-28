@@ -145,9 +145,9 @@ function sucesso(msg){
 function sucesso_delete(msg){
         var mensagem = $('.mensagem');
         mensagem.empty().html('<p class="alert alert-success"><strong>OK. </strong>'+msg+'<img src="img/ok.png" alt="Carregando..."></p>').fadeIn("fast");                
-        setTimeout(function (){
+        //setTimeout(function (){
             location.reload();
-        },1000);
+        //},1000);
         
         //window.setTimeout()
         //delay(2000);

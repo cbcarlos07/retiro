@@ -44,6 +44,7 @@ class Pessoa_DAO
         return $teste;
     }
     public function update(Pessoa $pessoa){
+        require_once 'ConnectionFactory.class.php';
         $conexao = null;
         $teste = false;
         $this->conexao =  new ConnectionFactory();
@@ -80,6 +81,7 @@ class Pessoa_DAO
     }
 
     public function delete($codigo){
+        require_once 'ConnectionFactory.class.php';
         $conexao = null;
         $teste = false;
         $this->conexao =  new ConnectionFactory();
@@ -130,6 +132,7 @@ class Pessoa_DAO
                 $pessoa->setValorFalta($row["FALTA"]);
                 $pessoa->setValorValor($row["VALOR"]);
                 $pessoa->setValorPago($row["PAGO"]);
+                $pessoa->setDtNascimento($row['DT_NASCIMENTO']);
                 $pessoaList->addPessoa($pessoa);
             }
             $this->conexao = null;
@@ -141,7 +144,7 @@ class Pessoa_DAO
     }
 
     public function getPessoa($codigo){
-
+        require_once 'ConnectionFactory.class.php';
         require_once 'beans/Pessoa.class.php';
         require_once 'beans/Retiro.class.php';
         $pessoa = null;
@@ -187,6 +190,9 @@ class Pessoa_DAO
     }
 
    public function getListaPessoaDesistente($str_pessoa){
+       require_once 'ConnectionFactory.class.php';
+       require_once 'beans/Pessoa.class.php';
+       include_once ("services/PessoaList.class.php");
 
        $conexao = null;
 
@@ -195,7 +201,7 @@ class Pessoa_DAO
        $pessoaList = new PessoaList();
 
        try {
-           if($str_pessoa.equals("")){
+           if($str_pessoa == ""){
                $sql = "SELECT D.*, 
                        CONCAT(SUBSTR(d.CPF_DESISTENTE,1,3),'.',SUBSTR(d.CPF_DESISTENTE,4,3),'.',SUBSTR(d.CPF_DESISTENTE,7,3),'-',SUBSTR(d.CPF_DESISTENTE,10,3)) CPF 
                        FROM desistente d ";
@@ -204,23 +210,24 @@ class Pessoa_DAO
            }else{
                $sql = "SELECT D.*,
                          CONCAT(SUBSTR(d.CPF_DESISTENTE,1,3),'.',SUBSTR(d.CPF_DESISTENTE,4,3),'.',SUBSTR(d.CPF_DESISTENTE,7,3),'-',SUBSTR(d.CPF_DESISTENTE,10,3)) CPF 
-                        FROM desistente d WHERE d.NM_desistente LIKE ?";
+                        FROM desistente d WHERE d.NM_desistente LIKE :nome";
                $stmt = $this->conexao->prepare($sql);
-               $stmt->bindValue(1, "%"+$str_pessoa+"%");
+               $stmt->bindValue(":nome", "%$str_pessoa%", PDO::PARAM_STR);
 
            }
-           while($row = $stmt->fetch(PDO::FETCH_OBJ)){
+           $stmt->execute();
+           while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
                $pessoa = new Pessoa();
-               $pessoa->setCodigo_pessoa($row["CD_DESISTENTE"]);
-               $pessoa->setNm_pessoa($row["NM_DESISTENTE"]);
-               $pessoa->setNr_cpf($row["CPF"]);
-               $pessoa->setNr_telefone($row["NR_TELEFONE"]);
-               $pessoa->setDs_email($row["DS_EMAIL"]);
-               $pessoa->setSn_chale($row["SN_CHALE"]);
-               $pessoa->setValor_pagar($row["TOTAL"]);
-               $pessoa->setValor_falta($row["FALTA"]);
-               $pessoa->setValor_valor($row["VALOR"]);
-               $pessoa->setValor_pago($row["PAGO"]);
+               $pessoa->setCodigoPessoa($row["CD_DESISTENTE"]);
+               $pessoa->setNmPessoa($row["NM_DESISTENTE"]);
+               $pessoa->setNrCpf($row["CPF"]);
+               $pessoa->setNrTelefone($row["NR_TELEFONE"]);
+               $pessoa->setDsEmail($row["DS_EMAIL"]);
+               $pessoa->setSnChale($row["SN_CHALE"]);
+               $pessoa->setValorPagar($row["TOTAL"]);
+               $pessoa->setValorFalta($row["FALTA"]);
+               $pessoa->setValorValor($row["VALOR"]);
+               $pessoa->setValorPago($row["PAGO"]);
 
                $pessoaList->addPessoa($pessoa);
            }
@@ -273,6 +280,7 @@ class Pessoa_DAO
     }
 
     public function deleteDesistente($codigo){
+        require_once 'ConnectionFactory.class.php';
         $conexao = null;
         $teste = false;
         $this->conexao =  new ConnectionFactory();
@@ -280,7 +288,7 @@ class Pessoa_DAO
         try {
             $stmt = $this->conexao->prepare($sql);
             $stmt->bindValue(1, $codigo);
-            $stmt.execute();
+            $stmt->execute();
             $teste = true;
             $this->conexao = null;
         } catch (PDOException $ex) {
@@ -314,6 +322,7 @@ class Pessoa_DAO
          }
 
   public function getValor($pessoa){
+             require_once 'ConnectionFactory.class.php';
             $valor = 0;
             $conexao = null;
 
@@ -337,7 +346,7 @@ class Pessoa_DAO
 
     public function inserirRetornarDesistente($pessoa){
         $codigo = 0;
-        $valor = getValor($pessoa);
+        $valor = $this->getValor($pessoa);
         $conexao = null;
 
         $this->conexao =  new ConnectionFactory();
@@ -350,9 +359,9 @@ class Pessoa_DAO
             $stmt = $this->conexao->prepare($sql);
             $stmt->bindValue(1, $pessoa);
 
-            $stmt.execute();
+            $stmt->execute();
             $codigo =  $this->conexao->lastInsertId();
-                inserirValor($codigo, $valor);
+                $this->inserirValor($codigo, $valor);
 
             $this->conexao = null;
         } catch (PDOException $ex) {
@@ -360,7 +369,7 @@ class Pessoa_DAO
         }
 
 
-        deleteDesistente($pessoa);
+        $this->deleteDesistente($pessoa);
         return $codigo;
     }
 

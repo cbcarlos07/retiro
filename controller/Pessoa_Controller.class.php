@@ -45,6 +45,7 @@ class Pessoa_Controller
     }
 
     public function getListaPessoaDesistente($pessoa){
+        include_once 'model/Pessoa_DAO.class.php';
         $pd = new Pessoa_DAO();
         $teste = $pd->getListaPessoaDesistente($pessoa);
         return $teste;
@@ -57,6 +58,7 @@ class Pessoa_Controller
     }
 
     public function deleteDesistente($pessoa){
+        include_once '../model/Pessoa_DAO.class.php';
         $pd = new Pessoa_DAO();
         $teste = $pd->deleteDesistente($pessoa);
         return $teste;
@@ -75,12 +77,14 @@ class Pessoa_Controller
     }
 
     public function inserirRetornarDesistente($pessoa){
+        include_once '../model/Pessoa_DAO.class.php';
         $pd = new Pessoa_DAO();
         $teste = $pd->inserirRetornarDesistente($pessoa);
         return $teste;
     }
 
     public function inserirDesistente($pessoa){
+
         include_once '../model/Pessoa_DAO.class.php';
         $pd = new Pessoa_DAO();
         $teste = $pd->inserirDesistente($pessoa);

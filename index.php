@@ -1,9 +1,22 @@
+<?php
+$login = "";
+$senha = "";
+$checled = "";
+if(isset($_COOKIE['login'])){
+    $login = $_COOKIE['login'];
+    $senha = $_COOKIE['senha'];
+    $checled = "checked";
+
+}
+
+?>
 <!DOCTYPE html>
 <!--
 To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
+
 <html>
     <head>
         <title>Sistema de Retiro</title>
@@ -24,15 +37,12 @@ and open the template in the editor.
             <p id="profile-name" class="profile-name-card"></p>
             <form class="form-signin" id="login-form" method="post">
                 <span id="reauth-email" class="reauth-email"></span>
-                <input type="text" id="inputEmail" name="inputEmail" class="form-control" placeholder="Usu&aacute;rio" required autofocus value="">
-                <input type="password" id="inputPassword" name="inputPassword" class="form-control" placeholder="Senha" required value="">
+                <input type="text" id="inputEmail" name="inputEmail" class="form-control" placeholder="Usu&aacute;rio" required autofocus value="<?php echo $login; ?>">
+                <input type="password" id="inputPassword" name="inputPassword" class="form-control" placeholder="Senha" required value="<?php echo $senha; ?>">
                 <div id="remember" class="checkbox">
                     <label>
-                        <c:set var="checkbox" value="" />
-                        <c:if test="${checked == 'S'}">
-                            <c:set var="checkbox" value="checked" />
-                        </c:if>
-                        <input type="checkbox" value="S" name="lembrar" id="lembrar" > Lembre-me
+
+                        <input type="checkbox" value="S" name="lembrar" id="lembrar" <?php echo $checled; ?>> Lembre-me
                     </label>
                 </div>
                 <p class="mensagem"></p>

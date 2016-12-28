@@ -19,6 +19,7 @@ function logar(acao){
             lembrar = 'N';
         console.log("Acao: "+acao);
         console.log("Lembrar: "+lembrar);
+        console.log("usuario: "+usuario);
         $.getJSON({
 
                 type: "POST",
@@ -26,7 +27,7 @@ function logar(acao){
 
                 beforeSend: carregando,
                 data: {
-                    'usuario' : usuario,
+                    'login'   : usuario,
                     'senha'   : senha,
                     'lembrar' : lembrar,
                     'acao'     : acao

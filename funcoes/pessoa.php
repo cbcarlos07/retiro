@@ -143,7 +143,7 @@ function alterar($codigo,$nome,
     $pessoa->setCodigoPessoa($codigo);
     $pessoa->setNmPessoa(strtoupper($nome));
     $vowels = array(".", "-");
-    $novocpf = str_replace($vowels,'-',$cpf);
+    $novocpf = str_replace($vowels,'',$cpf);
     $vowels = array("(", ")","-"," ");
     $novotelefone = str_replace($vowels,"",$telefone);
     $pessoa->setNrCpf($novocpf);

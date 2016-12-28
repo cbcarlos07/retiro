@@ -18,24 +18,28 @@ class Usuario_Controller
     }
 
     public function update(Usuario $usuario){
+        include_once ("../model/Usuario_DAO.class.php");
         $usuario_dao = new Usuario_DAO();
         $retorno = $usuario_dao->update($usuario);
         return $retorno;
     }
 
     public function resetarSenha($usuario){
+        include_once ("../model/Usuario_DAO.class.php");
         $usuario_dao = new Usuario_DAO();
         $retorno = $usuario_dao->resetarSenha($usuario);
         return $retorno;
     }
 
     public function delete($user){
+        include_once ("../model/Usuario_DAO.class.php");
         $usuario_dao = new Usuario_DAO();
         $retorno = $usuario_dao->delete($user);
         return $retorno;
     }
 
     public function getListaUsuario($nome){
+        require_once 'model/Usuario_DAO.class.php';
         $usuario_dao = new Usuario_DAO();
         $retorno = $usuario_dao->getListaUsuario($nome);
         return $retorno;
@@ -52,6 +56,20 @@ class Usuario_Controller
         include_once ("../model/Usuario_DAO.class.php");
         $usuario_dao = new Usuario_DAO();
         $retorno = $usuario_dao->getUser($login, $senha);
+        return $retorno;
+    }
+
+    public function snLogar($login, $senha){
+        include_once ("../model/Usuario_DAO.class.php");
+        $usuario_dao = new Usuario_DAO();
+        $retorno = $usuario_dao->snLogar($login, $senha);
+        return $retorno;
+    }
+
+    public function recSnAtual($login, $senha){
+        include_once ("../model/Usuario_DAO.class.php");
+        $usuario_dao = new Usuario_DAO();
+        $retorno = $usuario_dao->recSnAtual($login, $senha);
         return $retorno;
     }
 

@@ -1,10 +1,11 @@
 <?php
+include 'include/sessao.php';
 //echo "<link rel='shortcut icon' href='img/ham.png'>";
 // PRIMEIRAMENTE: INSTALEI A CLASSE NA PASTA FPDF DENTRO DE MEU SITE.
 define('FPDF_FONTPATH','fpdf/font/'); 
 
 // INSTALA AS FONTES DO FPDF
-require('fpdf/fpdf.php'); 
+require('fpdf/fpdf.php');
 
 // INSTALA A CLASSE FPDF
 class PDF extends FPDF {
@@ -46,9 +47,9 @@ class PDF extends FPDF {
         $l = 4;
         $this->SetFont('Arial','B',12);
         $this->SetXY(10,15);
-        $this->Cell(0,$l,'PROTOCOLO DE JEJUM','B',1,'C');
+        $this->Cell(0,$l,'LISTA DE NOMES','B',1,'C');
         $l=5;
-        $this->SetFont('Arial','B',10);
+        $this->SetFont('Arial','B',12);
         //$this->Cell(20,$l,'Dados 1:',0,0,'L');
         //$this->Cell(100,$l,'','B',0,'L');
         //$this->Cell(35,$l,'',0,0,'L');
@@ -81,20 +82,19 @@ class PDF extends FPDF {
         $this->SetFillColor(232,232,232);
         $this->SetTextColor(0,0,0);
         $this->SetFont('Arial','B',7);
-        $this->Cell(60,$l,'PACIENTE',1,0,'C',1);
-        $this->Cell(43,$l,'UNIDADE',1,0,'C',1);
-        $this->Cell(16,$l,'LEITO',1,0,'C',1);
-        $this->Cell(70,$l,'JEJUM',1,0,'C',1);
-        $this->Cell(23,$l,'INICIO DO JEJUM',1,0,'C',1);
-        $this->Cell(70,$l,'OBSERVACAO',1,0,'C',1);        
+        $this->Cell(20,$l,'ITEM',1,0,'C',1);
+        $this->Cell(100,$l,'NOME',1,0,'L',1);
+        $this->Cell(27,$l,'CPF',1,0,'L',1);
+        $this->Cell(35,$l,'DT NASCIMENTO',1,0,'C',1);
+
        // $this->Ln();
 
     }
 
     function Footer(){ // CRIANDO UM RODAPE
 
-        $this->SetXY(15,173);
-        $this->Rect(10,270,190,20);
+        $this->SetXY(15,260);
+        //$this->Rect(10,270,190,20);
         $this->SetFont('Arial','',10);
         //$this->Cell(70,8,'Assinatura ','T',0,'L');
         $this->Cell(40,8,' ',0,0,'L');
@@ -111,7 +111,8 @@ class PDF extends FPDF {
         //echo $data;
         
         $this->Cell(0,7,$data,0,0,'R');
-  
+
+
     }
 
 
@@ -129,8 +130,8 @@ class PDF extends FPDF {
            $pessoaList = new PessoaListIterator($lista);
            $pessoa = new Pessoa();
 
-            //$pdf=new PDF('P','mm','A4'); //CRIA UM NOVO ARQUIVO PDF NO TAMANHO A4
-            $pdf=new PDF('L','mm','A4'); //CRIA UM NOVO ARQUIVO PDF NO TAMANHO A4           
+            $pdf=new PDF('P','mm','A4'); //CRIA UM NOVO ARQUIVO PDF NO TAMANHO A4
+            //$pdf=new PDF('L','mm','A4'); //CRIA UM NOVO ARQUIVO PDF NO TAMANHO A4
             $pdf->AddPage(); // ADICIONA UMA PAGINA
             $pdf->AliasNbPages(); // SELECIONA O NUMERO TOTAL DE PAGINAS, USADO NO RODAPE
             $pdf->SetFont('Arial','',8);
@@ -140,17 +141,22 @@ class PDF extends FPDF {
             $l=5; // ALTURA DA LINHA
             $y = 28; //posicao no eixo Y
             $item = 0;
+            $itens = 0;
             while ($pessoaList->hasNextPessoa()){
                 $item++;
+                $itens++;
                 $pessoa = $pessoaList->getNextPessoa();
             // ENQUANTO OS DADOS VÃO PASSANDO, O FPDF VAI INSERINDO OS DADOS NA PAGINA
 
                 $dados1 = $item;
-                $dados2 = utf8_decode($$pessoa->get); // NESTE CASO, EU DECODIFIQUEI OS DADOS, POIS É UM CAMPO DE     TEXTO.
-                $dados3 = utf8_decode($jejum->getLeito());
-                $dados4 = utf8_decode(str_replace('|','',$jejum->getJejum()));
-                $dados5 = utf8_decode($jejum->getInicio_jejum());
-                $dados6 = utf8_decode($jejum->getObs());
+                $dados2 = utf8_decode($pessoa->getNmPessoa()); // NESTE CASO, EU DECODIFIQUEI OS DADOS, POIS É UM CAMPO DE     TEXTO.
+                $dados3 = $pessoa->getNrCpf();
+                $dataMySQL = explode('-',$pessoa->getDtNascimento());
+
+                $dia = $dataMySQL[2];
+                $mes = $dataMySQL[1];
+                $ano = $dataMySQL[0];
+                $dados4 = $dia.'/'.$mes.'/'.$ano;
 
 
                 //$l = 5 * contaLinhas($dados1,48); 
@@ -163,29 +169,29 @@ class PDF extends FPDF {
             //        $y=59;             // E O Y INICIAL É RESETADO
             //
             //    }
-                $pdf->SetFont('Arial','',6);
+                $pdf->SetFont('Arial','',8);
                 //DADOS
                 $pdf->SetY($y);
                 $pdf->SetX(10);
-                $pdf->Rect(10,$y,60,$l);
-                $pdf->MultiCell(80,6,$dados1,0,2); // ESTA É A CELULA QUE PODE TER DADOS EM MAIS DE UMA LINHA
+                $pdf->Rect(10,$y,20,$l);
+                $pdf->MultiCell(20,6,$dados1,0,'C',false); // ESTA É A CELULA QUE PODE TER DADOS EM MAIS DE UMA LINHA
 
 
                 $pdf->SetY($y);
-                $pdf->SetX(71);
-                $pdf->Rect(70,$y,43,$l);
-                $pdf->MultiCell(80,6,$dados2,0,2);
+                $pdf->SetX(30);
+                //$pdf->Rect(30,$y,80,$l);
+                $pdf->MultiCell(100,5,$dados2,1,'L'); //NOME
 
                 $pdf->SetY($y);
-                $pdf->SetX(113);
-                $pdf->Rect(113,$y,16,$l);
-                $pdf->MultiCell(20,5,$dados3,0,2);
+                $pdf->SetX(130);
+                //$pdf->Rect(113,$y,16,$l);
+                $pdf->MultiCell(27,5,$dados3,1,'C',false); ///CPF
 
                 $pdf->SetY($y);
-                $pdf->SetX(129);
-                $pdf->Rect(129,$y,70,$l);
-                $pdf->MultiCell(100,5,$dados4,0,2);
-
+                $pdf->SetX(157);
+                //$pdf->Rect(129,$y,70,$l);
+                $pdf->MultiCell(35,5,$dados4,1,'C',false); //NASCIMENTO
+/*
                 $pdf->SetY($y);
                 $pdf->SetX(199);
                 $pdf->Rect(199,$y,23,$l);
@@ -194,17 +200,24 @@ class PDF extends FPDF {
                 $pdf->SetY($y);
                 $pdf->SetX(222);
                 $pdf->Rect(222,$y,70,$l);
-                $pdf->MultiCell(240,5,$dados6,0,2);
+                $pdf->MultiCell(240,5,$dados6,0,2);*/
             //    $pdf->SetY($y);
             //    $pdf->SetX(900);
             //    $pdf->Rect(185,$y,15,$l);
 
                 //$pdf->Ln();
                 $y += $l;
-                // $y++;
+                if($itens > 47)
+                {
+                    $pdf->AddPage();
+                    $itens = 0;
+                    $y = 28;
+                }
+
 
             }
 //echo "<link rel='shortcut icon' href='img/ham.png'>";
+
 $pdf->Footer();
 $pdf->Output(); // IMPRIME O PDF NA TELA
 

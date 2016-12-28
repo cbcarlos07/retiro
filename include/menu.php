@@ -4,7 +4,7 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
-<?php session_start(); ?>
+
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -28,7 +28,7 @@ and open the template in the editor.
                 <li role="presentation" class="dropdown">
                     <a href="#valor" data-nome="valor" class="menu-retiro">Valores</a>
                     <ul class="dropdown-menu">
-                        <li><a href="valor" data-nome="valor" class="menu-retiro" >Valores</a></li>
+                        <li><a href="#valor" data-nome="valor" class="menu-retiro" >Valores</a></li>
                         <li><a href="cadvalor.php"  >Novo Cadastro</a></li>
                     </ul>
                 </li>
@@ -41,31 +41,31 @@ and open the template in the editor.
                     </ul>
                 </li>
                 <li role="presentation" class="dropdown">
-                    <a href="gasto">Gastos</a>
+                    <a href="#gasto" data-nome="gasto" class="menu-retiro">Gastos</a>
                     <ul class="dropdown-menu">
-                        <li><a href="gasto" >Gastos</a></li>
-                        <li><a href="gasto?acao=N">Novo Cadastro</a></li>
+                        <li><a href="#gasto" data-nome="gasto" class="menu-retiro">Gastos</a></li>
+                        <li><a href="cadgasto.php">Novo Cadastro</a></li>
                     </ul>
                 </li>
                 <li role="presentation" class="dropdown">
-                    <a href="desistente">Desistente</a>
+                    <a href="#desistente" data-nome="desistente" class="menu-retiro">Desistente</a>
                     <ul class="dropdown-menu">
-                        <li><a href="desistente" >Desistente</a></li>
+                        <li><a href="#desistente" data-nome="desistente" class="menu-retiro">Desistente</a></li>
                         <!-- <li><a href="curso?acao=N">Novo Cadastro</a></li>-->
                     </ul>
                 </li>
                 <li role="presentation" class="dropdown">
-                    <a href="total">Totais</a>
+                    <a href="#total" data-nome="total" class="menu-retiro">Totais</a>
                     <ul class="dropdown-menu">
-                        <li><a href="total" >Totais</a></li>
+                        <li><a href="#total" data-nome="total" class="menu-retiro">Totais</a></li>
                         <!-- <li><a href="curso?acao=N">Novo Cadastro</a></li>-->
                     </ul>
                 </li>
                 <li role="presentation" class="dropdown">
-                    <a href="usuario">Usu&aacute;rios</a>
+                    <a href="#usuario" data-nome="usuario" class="menu-retiro">Usu&aacute;rios</a>
                     <ul class="dropdown-menu">
-                        <li><a href="usuario" >Usu&aacute;rios</a></li>
-                        <li><a href="usuario?acao=N">Novo Cadastro</a></li>
+                        <li><a href="#usuario" data-nome="usuario" class="menu-retiro">Usu&aacute;rios</a></li>
+                        <li><a href="cadusuario.php">Novo Cadastro</a></li>
                     </ul>
                 </li>
                 <!--
@@ -78,7 +78,7 @@ and open the template in the editor.
                   </li>
                   -->
                 <li role="presentation" class="dropdown">
-                    <a href="usuario?acao=D">Sair</a>
+                    <a href="sair.php">Sair</a>
 
                 </li>
             </ul>

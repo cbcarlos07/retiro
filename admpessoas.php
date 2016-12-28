@@ -1,5 +1,6 @@
 
 <?php
+include 'include/sessao.php';
 $nome = "";
 if(isset($_POST['search'])){
     $nome = $_POST['search'];
@@ -31,7 +32,7 @@ $pessoaList = new PessoaListIterator($lista);
                 <button type="button" class="close" data-dismiss="modal" aria-label="Fechar"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="modalLabel">Excluir Item</h4>
             </div>
-            <div class="modal-body">Deseja realmente excluir o item <b><span class="nome"></span></b> e todos dados de pagamento? </div>
+            <div class="modal-body"><span class="msg"></span> <b><span class="nome"></span>?</b> </div>
             <div class="modal-footer">
                 <a href="#" type="button"  class="btn btn-primary delete-yes">Sim</a>
                 <button type="button" class="btn btn-default" data-dismiss="modal">N&atilde;o</button>
@@ -60,12 +61,12 @@ $pessoaList = new PessoaListIterator($lista);
         <a href="cadpessoa.php" style="margin-top: 20px;" class="btn btn-primary novo" >Novo</a>
     </div>
     <div class="col-xs-12 col-sm-2 col-md-2 col-lg-2">
-        <a href="imprimir?acao=T&codigo='%'" style="margin-top: 20px; " class="btn btn-success" >Imprimir <img src="img/printer.png" width="20"></a>
+        <a href="pdf.php" style="margin-top: 20px; " target="_blank" class="btn btn-success" >Imprimir <img src="img/printer.png" width="20"></a>
     </div>
 
 
     <div class="table table-hover table-responsive">
-        <table class="table table-striped" cellspacing="0" cellpadding="0">
+        <table class="table table-striped table-hover" cellspacing="0" cellpadding="0">
             <thead>
             <th>C&oacute;digo</th>
             <th>Pessoa</th>
@@ -105,10 +106,10 @@ $pessoaList = new PessoaListIterator($lista);
                       <td class="actions">
 
                           <a class="btn btn-warning btn-xs action-button" href="#" data-nome="B" data-url="altpessoa.php" data-id="<?php echo $pessoa->getCodigoPessoa(); ?>">Editar</a>
-                          <a class="delete btn btn-danger btn-xs" href="#" data-toggle="modal" data-target="#delete-modal" data-nome="<?php echo $pessoa->getNmPessoa(); ?>" data-id="<?php echo $pessoa->getCodigoPessoa(); ?>" data-action="E">Excluir</a>
-                          <a class="delete btn btn-default btn-xs" href="#" data-toggle="modal" data-target="#delete-modal" data-nome="<?php echo $pessoa->getNmPessoa(); ?>" data-id="<?php echo $pessoa->getCodigoPessoa(); ?>" data-action="D">Desistente</a>
-                          <a class="btn btn-success btn-xs" href="imprimir?acao=F&codigo=<?php $pessoa->getCodigoPessoa(); ?>">Imprimir</a>
-                          <a class="btn btn-primary btn-xs action-button" href="#" data-nome="<?php echo $pessoa->getNmPessoa(); ?>" data-url="admpgto.php" data-id="<?php echo $pessoa->getCodigoPessoa(); ?>" ">Pagamentos</a>
+                          <a class="delete btn btn-danger btn-xs" href="#" data-toggle="modal" data-target="#delete-modal" data-nome="<?php echo $pessoa->getNmPessoa(); ?>" data-id="<?php echo $pessoa->getCodigoPessoa(); ?>" data-action="E" data-msg="Deseja realmente excluir: ">Excluir</a>
+                          <a class="delete btn btn-default btn-xs" href="#" data-toggle="modal" data-target="#delete-modal" data-nome="<?php echo $pessoa->getNmPessoa(); ?>" data-id="<?php echo $pessoa->getCodigoPessoa(); ?>" data-action="D" data-msg="Considerar pessoa desistente: ">Desistente</a>
+                          <a class="btn btn-success btn-xs action-button" href="#" target="_blank" data-url="ficha.php"  data-id="<?php echo $pessoa->getCodigoPessoa(); ?>">Imprimir</a>
+                          <a class="btn btn-primary btn-xs action-button" href="#"  data-nome="<?php echo $pessoa->getNmPessoa(); ?>" data-url="admpgto.php" data-id="<?php echo $pessoa->getCodigoPessoa(); ?>" ">Pagamentos</a>
                       </td>
                   </tr>
             <?php
@@ -141,9 +142,11 @@ $pessoaList = new PessoaListIterator($lista);
         var nome = $(this).data('nome'); // vamos buscar o valor do atributo data-name que temos no botão que foi clicado
         var id = $(this).data('id'); // vamos buscar o valor do atributo data-id
         var acao = $(this).data('action');
+        var msg = $(this).data('msg');
         //$('span.nome').text(nome+ ' (id = ' +id+ ')'); // inserir na o nome na pergunta de confirmação dentro da modal
         //console.log("Nome para deletar: "+nome);
         $('span.nome').text(nome);
+        $('span.msg').text(msg);
         $('.delete-yes').on('click', function(){
             deletar(id,acao);
         });

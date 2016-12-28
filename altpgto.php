@@ -1,4 +1,5 @@
 <?php
+include 'include/sessao.php';
 $nome = $_POST['acao'];
 $pessoa = $_POST['pessoa'];
 $codigo = $_POST['codigo'];

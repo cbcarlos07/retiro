@@ -4,8 +4,8 @@
 class ConnectionFactory extends PDO {
     private $dsn = 'mysql:host=localhost;dbname=retiro';
 
-    private $user = 'root';
-    private $password = '123';
+    private $user = 'login';
+    private $password = 'senhaz';
     public $handle = null;
 
     function __construct() {

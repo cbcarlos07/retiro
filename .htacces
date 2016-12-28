@@ -1,0 +1,29 @@
+
+RewriteEngine on
+
+Options -Indexes
+
+
+
+
+# REMOVE PHP FROM URL
+# REMOVE PHP EXTENSION
+#RewriteEngine on
+#RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteCond %{REQUEST_FILENAME}\.php -f
+#RewriteRule ^(.*)$ $1.php
+
+<IfModule mod_rewrite.c>
+Options +FollowSymLinks
+RewriteEngine on
+RewriteCond %{SCRIPT_FILENAME} !-f
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteBase /
+RewriteRule ([^/]*)/?$ /$1.php [QSA,L]
+</IfModule>
+
+ErrorDocument 400 erro.php
+ErrorDocument 401 erro.php
+ErrorDocument 403 erro.php
+ErrorDocument 500 erro.php
+ErrorDocument 404 erro.php
