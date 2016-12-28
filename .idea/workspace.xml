@@ -56,8 +56,8 @@
       <file leaf-file-name="ConnectionFactory.class.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/model/ConnectionFactory.class.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="7" column="31" selection-start-line="7" selection-start-column="31" selection-end-line="7" selection-end-column="31" />
+            <state relative-caret-position="374">
+              <caret line="22" column="5" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
               <folding />
             </state>
           </provider>
@@ -241,7 +241,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -250,15 +250,15 @@
     <property name="com.intellij.database.dataSource.DataSourceTemplate" value="MySQL" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\wamp\www\retiro" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\wamp\www\retiro\services" />
       <recent name="D:\wamp\www\retiro\nbproject" />
       <recent name="D:\wamp\www\retiro\model" />
       <recent name="D:\wamp\www\retiro\js" />
       <recent name="D:\wamp\www\retiro\include" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\wamp\www\retiro" />
     </key>
   </component>
   <component name="RunManager">
@@ -318,16 +318,16 @@
       <workItem from="1482796437981" duration="8074000" />
       <workItem from="1482871895044" duration="2529000" />
       <workItem from="1482874570353" duration="365000" />
-      <workItem from="1482881897432" duration="2724000" />
+      <workItem from="1482881897432" duration="2955000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="106709000" />
+    <option name="totallyTimeSpent" value="106940000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1378" height="744" extended-state="1" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1378" height="744" extended-state="0" />
+    <editor active="false" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2650514" sideWeight="0.49126637" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -777,8 +777,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/model/ConnectionFactory.class.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="31" selection-start-line="7" selection-start-column="31" selection-end-line="7" selection-end-column="31" />
+        <state relative-caret-position="374">
+          <caret line="22" column="5" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
           <folding />
         </state>
       </provider>
