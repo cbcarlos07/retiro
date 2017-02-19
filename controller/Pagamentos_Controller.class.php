@@ -24,12 +24,14 @@ class Pagamentos_Controller
     }
 
     public function delete($pagamentos){
+        require_once 'model/Pagamentos_DAO.class.php';
         $pd = new Pagamentos_DAO();
         $teste = $pd->delete($pagamentos);
         return $teste;
     }
 
     public function deletePessoa($pagamentos){
+        require_once '../model/Pagamentos_DAO.class.php';
         $pd = new Pagamentos_DAO();
         $teste = $pd->deletePessoa($pagamentos);
         return $teste;

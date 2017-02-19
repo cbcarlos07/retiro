@@ -67,11 +67,12 @@ function salvar(){
     }
     
     function operacao(codigo, acao){
-        console.log("Codigo: "+acao);
+        console.log("Acao: "+acao);
+        console.log("Codigo: "+codigo);
         $.ajax({
                 dataType: 'json',
                 type: "POST",
-                url: "desistente",
+                url: "funcoes/pgto.php",
                 beforeSend: carregando,
                 
                 data: {
@@ -83,8 +84,8 @@ function salvar(){
                     //var retorno = data.retorno;
                     //alert(retorno);
 
-                    console.log("Excluir: "+data);
-                    if(data == 1){
+                    console.log("Excluir: "+data.retorno);
+                    if(data.retorno == 1){
                         //sucesso();
                         console.log("Excluido com sucesso")
                         $('#delete-modal').modal('hide');
@@ -93,7 +94,7 @@ function salvar(){
                         //$('.list-group-item').remove();
                        //$(a.delete).remove();
                         
-                    }else if(data == 0){
+                    }else if(data.retorno == 0){
                         console.log("Nao conseguiu excluir");
                         errosend('N&atilde;o foi poss&iacute;vel excluir');
                     }

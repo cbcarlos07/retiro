@@ -82,7 +82,7 @@ function alterar($codigo, $pessoa, $valor, $data){
     $pagamento->setPessoa($pessoaObj);
     $pagamento->setValorPgto($valor);
     $pagamento->setValorData($data);
-    $teste = $pc->inserir($pagamento);
+    $teste = $pc->update($pagamento);
     if($teste = true) {
         echo json_encode(array('retorno' => 1));
     }
@@ -94,12 +94,12 @@ function alterar($codigo, $pessoa, $valor, $data){
 
 
 function excluir($codigo){
-    require_once '../controller/Valores_Controller.php';
-    require_once '../beans/Valores.class.php';
+    require_once '../controller/Pagamentos_Controller.class.php';
+   print_r("Codigo no excluir: ".$codigo);
 
-    $vc = new Valores_Controller();
+    $pc = new Pagamentos_Controller();
 
-    $teste = $vc->delete($codigo);
+    $teste = $pc->delete($codigo);
     if($teste = true) {
         echo json_encode(array('retorno' => 1));
     }

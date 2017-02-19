@@ -1,5 +1,9 @@
 <?php
-include 'include/sessao.php';
+session_start();
+
+if($_SESSION['login'] == ""){
+    echo "<script>location.href='./';</script>";
+}
 $nome = $_POST['acao'];
 $pessoa = $_POST['pessoa'];
 $codigo = $_POST['codigo'];
@@ -15,6 +19,7 @@ $pagamento = $pc->getPagamentos($codigo);
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Retiro - Cadastro de Pagamento </title>
+    <link rel="short icon"  href="img/iasd.png"/>
     <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
     <link rel="stylesheet" href="css/style.css" type="text/css" />
     <link rel="stylesheet" href="css/jquery.datetimepicker.min.css" type="text/css" />

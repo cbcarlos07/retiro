@@ -120,8 +120,14 @@ $pessoa = $pc->getPessoa($codigo);
             <div class="form-group">
                 <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
                     <div class="checkbox">
+                        <?php
+                        $check = "";
+                        if($pessoa->getSnChale() == 'S'){
+                            $check = 'checked';
+                        }
+                        ?>
                         <label>
-                            <input type="checkbox" value="S" id="chale" class="chale"> Chal&eacute;?
+                            <input type="checkbox" value="S" id="chale" class="chale" <?php echo $check ?>> Chal&eacute;?
                         </label>
                     </div>
                 </div>

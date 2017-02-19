@@ -1,5 +1,5 @@
 <?php
-include 'include/sessao.php';
+
 require_once 'controller/Pagamentos_Controller.class.php';
 require_once 'beans/Pagamentos.class.php';
 require_once 'services/PagamentosListIterator.class.php';
@@ -19,6 +19,7 @@ $pgtoList = new PagamentosListIterator($lista);
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Cadastro de Retiro</title>
+    <link rel="short icon"  href="img/iasd.png"/>
     <link rel="stylesheet" href="css/style.css" type="text/css" />
     <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
     <script src="js/jquery-3.1.1.min.js"></script>
@@ -98,7 +99,7 @@ $pgtoList = new PagamentosListIterator($lista);
                             <td class="actions">
 
                                 <a class="btn btn-warning btn-xs action-button" href="#" data-pessoa="<?php echo $codigo; ?>" data-nome="<?php echo $name; ?>" data-url="altpgto.php" data-id="<?php echo $pagamento->getCdPgto(); ?>">Editar</a>
-                                <a class="delete btn btn-danger btn-xs" href="#" data-toggle="modal" data-target="#delete-modal" data-nome="<?php echo 'R$ '.number_format($pagamento->getValorPgto(),2,',','.'); ?>" data-id="$<?php echo $pagamento->getCdPgto(); ?>">Excluir</a>
+                                <a class="delete btn btn-danger btn-xs" href="#" data-toggle="modal" data-target="#delete-modal" data-nome="<?php echo 'R$ '.number_format($pagamento->getValorPgto(),2,',','.'); ?>" data-id="<?php echo $pagamento->getCdPgto(); ?>">Excluir</a>
                                 <!--  <a class="btn btn-success btn-xs" href="imprimir?acao=F&codigo=${pessoa.codigo_pessoa}">Imprimir</a>
                                   <a class="btn btn-primary btn-xs" href="pagamentos?acao=F&codigo=${pessoa.codigo_pessoa}">Pagamentos</a>
                                -->
@@ -131,7 +132,7 @@ $pgtoList = new PagamentosListIterator($lista);
         //console.log("Nome para deletar: "+nome);
         $('span.nome').text(nome);
         $('.delete-yes').on('click', function(){
-            excluir(id);
+            operacao(id, 'E');
         });
         //$('.delete-yes').attr('href', 'curso?acao=E&id=' +id); // mudar dinamicamente o link, href do botão confirmar da modal
 
