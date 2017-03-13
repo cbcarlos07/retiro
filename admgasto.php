@@ -2,7 +2,7 @@
 session_start();
 
 if($_SESSION['login'] == ""){
-    echo "<script>location.href='./';</script>";
+   echo "<script>location.href='./';</script>";
 }
 include 'controller/Gasto_Controller.php';
 include 'services/GastoListIterator.class.php';

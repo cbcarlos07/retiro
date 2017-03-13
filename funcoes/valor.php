@@ -63,7 +63,7 @@ function cadastrar($descricao, $desc_valor, $idade_inicial, $idade_final){
         $vc = new Valores_Controller();
 
         $valor->setValorValor($desc_valor);
-        $valor->setDescricao(strtoupper($descricao));
+        $valor->setDescricao($descricao);
         $valor->setIdadeInicial($idade_inicial);
         $valor->setIdadeFinal($idade_final);
         $teste = $vc->inserir($valor);
@@ -85,7 +85,7 @@ function alterar($codigo, $descricao, $desc_valor, $idade_inicial, $idade_final)
     $vc = new Valores_Controller();
     $valor->setValorCodigo($codigo);
     $valor->setValorValor($desc_valor);
-    $valor->setDescricao(strtoupper($descricao));
+    $valor->setDescricao($descricao);
     $valor->setIdadeInicial($idade_inicial);
     $valor->setIdadeFinal($idade_final);
         $teste = $vc->update($valor);

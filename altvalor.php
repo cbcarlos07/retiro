@@ -1,5 +1,9 @@
 <?php
-include 'include/sessao.php';
+session_start();
+
+if($_SESSION['login'] == ""){
+   echo "<script>location.href='./';</script>";
+}
 $codigo = $_POST['codigo'];
 
 require_once 'controller/Valores_Controller.php';
@@ -11,8 +15,8 @@ $valor = $vc->getValores($codigo);
 
 <!DOCTYPE html>
 <html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head><meta http-equiv="Content-Type" content="text/html; charset=euc-jp">
+    
     <title>Cadastro de Retiro</title>
     <link rel="short icon"  href="img/iasd.png"/>
     <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
@@ -37,7 +41,7 @@ $valor = $vc->getValores($codigo);
             <br><br><br>
             <div class="form-group col-xs-12 col-sm-6 col-md-7 col-lg-6">
                 <label for="descricao">Descri&ccedil;&atilde;o</label>
-                <input type="text" id="descricao" name="descricao" class="form-control" required="" value="<?php echo $valor->getDescricao(); ?>"/>
+                <input  id="descricao" name="descricao" class="form-control" required="" value="<?php echo $valor->getDescricao(); ?>"/>
             </div>
             <br><br><br><br>
             <div class="form-group col-xs-12 col-sm-6 col-md-7 col-lg-3">
@@ -58,7 +62,7 @@ $valor = $vc->getValores($codigo);
             <hr />
             <button type="submit" class="btn btn-success " onclick="novo()">Salvar</button>
             <button type="reset" class="btn btn-primary">Limpar</button>
-            <a href="javascript:history.back();self.location.reload();" class="btn btn-warning" onclick="return verifica('Tem certeza de que deseja cancelar a opera&ccedil;&atilde;o?');"s>Cancelar</a>
+            <a href="#" class="btn btn-warning voltar" data-url="admvalores.php" onclick="return verifica('Tem certeza de que deseja cancelar a opera&ccedil;&atilde;o?');"s>Cancelar</a>
         </form>
     </div>
 
@@ -91,5 +95,16 @@ $valor = $vc->getValores($codigo);
     }
 </script>
 <script src="js/menu-acao.js"></script>
+<script>
+    $('.voltar').on('click', function(){
+        var url = $(this).data('url'); // vamos buscar o valor do atributo data-name que temos no botè´™o que foi clicado
+
+        var form = $('<form action="' + url + '" method="post">' +
+
+            '</form>');
+        $('body').append(form);
+        form.submit();
+    });
+</script>
 </body>
 </html>

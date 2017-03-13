@@ -1,5 +1,9 @@
 <?php
-include 'include/sessao.php';
+session_start();
+
+if($_SESSION['login'] == ""){
+   echo "<script>location.href='./';</script>";
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -56,7 +60,7 @@ include 'include/sessao.php';
             <hr />
             <button type="submit" class="btn btn-success " onclick="novo()">Salvar</button>
             <button type="reset" class="btn btn-primary">Limpar</button>
-            <a href="javascript:history.back();self.location.reload();" class="btn btn-warning" onclick="return verifica('Tem certeza de que deseja cancelar a opera&ccedil;&atilde;o?');"s>Cancelar</a>
+            <a href="#" class="btn btn-warning voltar" data-url="admusuario.php" onclick="return verifica('Tem certeza de que deseja cancelar a opera&ccedil;&atilde;o?');"s>Cancelar</a>
         </form>
     </div>
 
@@ -91,5 +95,16 @@ include 'include/sessao.php';
 <script src="js/validator.min.js"></script>
 <script src="js/jquery-3.1.1.min.js"></script>
 <script src="js/menu-acao.js"></script>
+<script>
+    $('.voltar').on('click', function(){
+        var url = $(this).data('url'); // vamos buscar o valor do atributo data-name que temos no botão que foi clicado
+
+        var form = $('<form action="' + url + '" method="post">' +
+
+            '</form>');
+        $('body').append(form);
+        form.submit();
+    });
+</script>
 </body>
 </html>

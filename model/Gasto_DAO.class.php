@@ -16,7 +16,7 @@ class Gasto_DAO
         $conexao = null;
         $teste = false;
         $this->conexao =  new ConnectionFactory();
-        $sql = "INSERT INTO GASTOS (DS_GASTO, OBS_GASTO, VALOR_GASTO, DT_GASTO)
+        $sql = "INSERT INTO `gastos` (`DS_GASTO`,`OBS_GASTO`, `VALOR_GASTO`, `DT_GASTO`)
                  VALUES(:descricao,:obs,:valor,:data_)";
         try {
             $datas = explode('/',$gasto->getDtGasto());
@@ -43,8 +43,8 @@ class Gasto_DAO
         $conexao = null;
         $teste = false;
         $this->conexao =  new ConnectionFactory();
-        $sql = "UPDATE GASTOS SET DS_GASTO = :descricao, OBS_GASTO = :obs, VALOR_GASTO = :valor, DT_GASTO = :data_
-                 WHERE CD_GASTO = :codigo";
+        $sql = "UPDATE `gastos` SET `DS_GASTO` = :descricao,`OBS_GASTO` = :obs, `VALOR_GASTO` = :valor, `DT_GASTO` = :data_
+                 WHERE `CD_GASTO` = :codigo";
         try {
             $datas = explode('/',$gasto->getDtGasto());
             $dia = $datas[0];
@@ -72,8 +72,8 @@ class Gasto_DAO
         $conexao = null;
         $teste = false;
         $this->conexao =  new ConnectionFactory();
-        $sql = "DELETE FROM GASTOS 
-                 WHERE CD_GASTO = :codigo";
+        $sql = "DELETE  FROM `gastos` 
+                 WHERE `CD_GASTO` = :codigo";
         try {
             $stmt = $this->conexao->prepare($sql);
             $stmt->bindValue(":codigo", $codigo, PDO::PARAM_INT);
@@ -98,11 +98,11 @@ class Gasto_DAO
 
         try {
             if($nome == ""){
-                $sql = "SELECT * FROM GASTOS";
+                $sql = "SELECT *  FROM `gastos`";
                 $stmt = $this->conexao->prepare($sql);
 
             }else{
-                $sql = "SELECT * FROM GASTOS WHERE DS_GASTO LIKE :nome";
+                $sql = "SELECT *  FROM `gastos` WHERE `DS_GASTO` LIKE :nome";
                 $stmt = $this->conexao->prepare($sql);
                 $stmt->bindValue(":nome", "%$nome%", PDO::PARAM_STR);
 
@@ -133,7 +133,7 @@ class Gasto_DAO
 
         $this->conexao =  new ConnectionFactory();
 
-        $sql = "SELECT * FROM GASTOS WHERE CD_GASTO = :codigo";
+        $sql = "SELECT *  FROM `gastos` WHERE `CD_GASTO` = :codigo";
 
         try {
             $stmt = $this->conexao->prepare($sql);

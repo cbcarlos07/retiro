@@ -2,9 +2,9 @@
 
 //ela herdará os métodos e atributos do PDO através da palavra-chave extends
 class ConnectionFactory extends PDO {
-    private $dsn = 'mysql:host=localhost;dbname=retiro';
+    private $dsn = 'mysql:host=localhost;dbname=gysac356_retiro';
 
-    private $user = 'gysacakes';
+    private $user = 'gysac356_gysa';
     private $password = 'gysa123';
     public $handle = null;
 

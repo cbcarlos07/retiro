@@ -76,7 +76,7 @@ class Pagamentos_DAO
             $stmt = $this->conexao->prepare($sql);
             $stmt->bindValue(":CODIGO", $codigo, PDO::PARAM_INT);
             $stmt->execute();
-           // print_r("Codigo: :".$codigo);
+          
             $teste = true;
 
             $this->conexao = null;

@@ -1,6 +1,9 @@
-
 <?php
-include 'include/sessao.php';
+session_start();
+
+if($_SESSION['login'] == ""){
+   echo "<script>location.href='./';</script>";
+}
 $nome = "";
 if(isset($_POST['search'])){
     $nome = $_POST['search'];

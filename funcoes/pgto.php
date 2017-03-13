@@ -95,7 +95,7 @@ function alterar($codigo, $pessoa, $valor, $data){
 
 function excluir($codigo){
     require_once '../controller/Pagamentos_Controller.class.php';
-   print_r("Codigo no excluir: ".$codigo);
+  // print_r("Codigo no excluir: ".$codigo);
 
     $pc = new Pagamentos_Controller();
 

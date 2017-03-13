@@ -1,5 +1,9 @@
 <?php
-include 'include/sessao.php';
+session_start();
+
+if($_SESSION['login'] == ""){
+   echo "<script>location.href='./';</script>";
+}
 require_once 'controller/Pessoa_Controller.class.php';
 require_once 'beans/Pessoa.class.php';
 $codigo = $_POST['codigo'];
@@ -11,8 +15,8 @@ $pessoa = $pc->getPessoa($codigo);
 ?>
 <!DOCTYPE html>
 <html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head><meta http-equiv="Content-Type" content="text/html; charset=euc-jp">
+    
     <title>Cadastro de Retiro</title>
     <link rel="short icon"  href="img/iasd.png"/>
     <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
@@ -100,8 +104,8 @@ $pessoa = $pc->getPessoa($codigo);
             <div class="row"></div>
             <div class="form-group col-xs-12 col-sm-3 col-md-3 col-lg-3">
                 <label for="valor">Valor</label>
-                <select class="form-control" id="valor" name="valor">
-                    <option value="0">Selecione</option>
+                <select class="form-control" id="valor" name="valor" required>
+                    <option value="">Selecione</option>
                     <?php
                         include_once 'controller/Valores_Controller.php';
                         include_once 'services/ValoresListIterator.class.php';
@@ -120,14 +124,15 @@ $pessoa = $pc->getPessoa($codigo);
             <div class="form-group">
                 <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
                     <div class="checkbox">
-                        <?php
-                        $check = "";
-                        if($pessoa->getSnChale() == 'S'){
-                            $check = 'checked';
-                        }
-                        ?>
                         <label>
-                            <input type="checkbox" value="S" id="chale" class="chale" <?php echo $check ?>> Chal&eacute;?
+                            <?php
+                             if($pessoa->getSnChale() == 'S'){
+                                $checked = "checked";
+                             }else{
+                                 $checked = "";
+                             }
+                            ?>
+                            <input <?php echo $checked; ?> type="checkbox" value="S" id="chale" class="chale"> Chal&eacute;?
                         </label>
                     </div>
                 </div>
@@ -148,7 +153,7 @@ $pessoa = $pc->getPessoa($codigo);
             <hr />
             <button type="submit" class="btn btn-success " onclick="salvar()">Salvar</button>
             <button type="reset" class="btn btn-primary">Limpar</button>
-            <a href="javascript:history.back();self.location.reload();" class="btn btn-warning" onclick="return verifica('Tem certeza de que deseja cancelar a opera&ccedil;&atilde;o?');"s>Cancelar</a>
+            <a href="#" class="btn btn-warning voltar" data-url="admpessoas.php" onclick="return verifica('Tem certeza de que deseja cancelar a opera&ccedil;&atilde;o?');"s>Cancelar</a>
         </form>
     </div>
 
@@ -239,7 +244,17 @@ $pessoa = $pc->getPessoa($codigo);
     });
 </script>
 
+<script>
+    $('.voltar').on('click', function(){
+        var url = $(this).data('url'); // vamos buscar o valor do atributo data-name que temos no botè´™o que foi clicado
 
+        var form = $('<form action="' + url + '" method="post">' +
+
+            '</form>');
+        $('body').append(form);
+        form.submit();
+    });
+</script>
 
 </body>
 </html>

@@ -1,6 +1,9 @@
-
 <?php
-include 'include/sessao.php';
+session_start();
+
+if($_SESSION['login'] == ""){
+   echo "<script>location.href='./';</script>";
+}
 $nome = "";
 if(isset($_POST['search'])){
     $nome = $_POST['search'];
@@ -101,15 +104,22 @@ $pessoaList = new PessoaListIterator($lista);
                       <td><?php echo $pessoa->getNrCpf(); ?></td>
                       <td><?php echo 'R$ '.number_format($pessoa->getValorPagar(),2,',','.'); ?></td>
                       <td><?php echo 'R$ '.number_format($pessoa->getValorFalta(),2,',','.'); ?></td>
-                      <td><?php echo 'R$ '.number_format($pessoa->getValorPago(),2,',','.'); ?></td>
-                      <td><?php $pessoa->getSnChale(); ?></td>
+                      <?php 
+                      if($pessoa->getValorPago()>0){
+                          $color = "blue";
+                      }else{
+                         $color = "";
+                      }
+                      ?>
+                      <td><font color="<?php echo $color; ?>"><?php echo 'R$ '.number_format($pessoa->getValorPago(),2,',','.'); ?></font></td>
+                      <td><?php echo $pessoa->getSnChale(); ?></td>
                       <td class="actions">
 
                           <a class="btn btn-warning btn-xs action-button" href="#" data-nome="B" data-url="altpessoa.php" data-id="<?php echo $pessoa->getCodigoPessoa(); ?>">Editar</a>
                           <a class="delete btn btn-danger btn-xs" href="#" data-toggle="modal" data-target="#delete-modal" data-nome="<?php echo $pessoa->getNmPessoa(); ?>" data-id="<?php echo $pessoa->getCodigoPessoa(); ?>" data-action="E" data-msg="Deseja realmente excluir: ">Excluir</a>
                           <a class="delete btn btn-default btn-xs" href="#" data-toggle="modal" data-target="#delete-modal" data-nome="<?php echo $pessoa->getNmPessoa(); ?>" data-id="<?php echo $pessoa->getCodigoPessoa(); ?>" data-action="D" data-msg="Considerar pessoa desistente: ">Desistente</a>
                           <a class="btn btn-success btn-xs action-button" href="#" target="_blank" data-url="ficha.php"  data-id="<?php echo $pessoa->getCodigoPessoa(); ?>">Imprimir</a>
-                          <a class="btn btn-primary btn-xs action-button" href="#"  data-nome="<?php echo $pessoa->getNmPessoa(); ?>" data-url="admpgto.php" data-id="<?php echo $pessoa->getCodigoPessoa(); ?>" ">Pagamentos</a>
+                          <a class="btn btn-primary btn-xs action-button" href="#"  data-nome="<?php echo $pessoa->getNmPessoa(); ?>" data-url="admpgto.php" data-id="<?php echo $pessoa->getCodigoPessoa(); ?>">Pagamentos</a>
                       </td>
                   </tr>
             <?php
@@ -161,7 +171,7 @@ $pessoaList = new PessoaListIterator($lista);
         var codigo = $(this).data('id');
         var url = $(this).data('url');
 
-        console.log('Codigo: '+codigo);
+        //console.log('Codigo: '+codigo);
         var form = $('<form action="' + url + '" method="post">' +
             '<input type="text" name="codigo" value="' + codigo + '" />' +
             '<input type="text" name="acao" value="' + acao + '" />' +

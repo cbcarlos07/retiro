@@ -1,5 +1,9 @@
 <?php
-include 'include/sessao.php';
+session_start();
+
+if($_SESSION['login'] == ""){
+   echo "<script>location.href='./';</script>";
+}
 $codigo = $_POST['codigo'];
 include 'controller/Gasto_Controller.php';
 include 'services/GastoListIterator.class.php';
@@ -13,8 +17,8 @@ $gasto = $gc->getGasto($codigo);
 ?>
 <!DOCTYPE html>
 <html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head><meta http-equiv="Content-Type" content="text/html; charset=euc-jp">
+    
     <title>Cadastro de Gastos </title>
     <link rel="short icon"  href="img/iasd.png"/>
     <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
@@ -72,7 +76,7 @@ $gasto = $gc->getGasto($codigo);
             <hr />
             <button type="submit" class="btn btn-success " onclick="novo()">Salvar</button>
             <button type="reset" class="btn btn-primary">Limpar</button>
-            <a href="javascript:history.back();self.location.reload();" class="btn btn-warning" onclick="return verifica('Tem certeza de que deseja cancelar a opera&ccedil;&atilde;o?');"s>Cancelar</a>
+            <a href="#" class="btn btn-warning voltar" data-url="admgasto.php" onclick="return verifica('Tem certeza de que deseja cancelar a opera&ccedil;&atilde;o?');"s>Cancelar</a>
         </form>
     </div>
 
@@ -116,5 +120,16 @@ $gasto = $gc->getGasto($codigo);
     $.datetimepicker.setLocale('pt-BR');
 </script>
 <script src="js/menu-acao.js"></script>
+<script>
+    $('.voltar').on('click', function(){
+        var url = $(this).data('url'); // vamos buscar o valor do atributo data-name que temos no botè´™o que foi clicado
+
+        var form = $('<form action="' + url + '" method="post">' +
+
+            '</form>');
+        $('body').append(form);
+        form.submit();
+    });
+</script>
 </body>
 </html>

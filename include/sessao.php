@@ -1,5 +1,5 @@
 <?php
-session_start();
-if($_SESSION['login'] == ""){
-    header("Location: .");
+
+if($_SESSION['login'] == null){
+   echo "<script>location.href='./';</script>";
 }

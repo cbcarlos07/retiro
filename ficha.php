@@ -1,5 +1,9 @@
 <?php
-include 'include/sessao.php';
+session_start();
+
+if($_SESSION['login'] == ""){
+   echo "<script>location.href='./';</script>";
+}
 $codigo = $_POST['codigo'];
 //echo "<link rel='shortcut icon' href='img/ham.png'>";
 // PRIMEIRAMENTE: INSTALEI A CLASSE NA PASTA FPDF DENTRO DE MEU SITE.

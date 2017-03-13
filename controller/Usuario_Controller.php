@@ -72,6 +72,13 @@ class Usuario_Controller
         $retorno = $usuario_dao->recSnAtual($login, $senha);
         return $retorno;
     }
+    
+     public function getRecCodigo($login, $senha){
+       include_once ("../model/Usuario_DAO.class.php");
+        $usuario_dao = new Usuario_DAO();
+        $retorno = $usuario_dao->getRecCodigo($login, $senha);
+        return $retorno;
+     }
 
 
 }

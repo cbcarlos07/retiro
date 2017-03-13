@@ -64,10 +64,12 @@ function login($login, $senha, $lembrar){
     require_once '../controller/Usuario_Controller.php';
     $uc = new Usuario_Controller();
 
-
-    $usuario = $uc->getUser($login, $senha);
-
-    if(searchUser($login, $senha)){
+    
+   
+    $teste = searchUser($login, $senha);
+     $usuario = $uc->getUser($login, $senha);
+    if($teste){
+     session_start();
         if(sn_atual($login,$senha) == 'S'){
             if($lembrar == 'S'){
                 $ck_login = "login";
@@ -84,19 +86,21 @@ function login($login, $senha, $lembrar){
 
 
             }
-            session_start();
+           
             $_SESSION['login'] = $login;
-            echo json_encode(array('retorno' => 1,'codigo' => $usuario->getCd_usuario()));
-            // echo 1;
+            $codigo = $uc->getRecCodigo($login,$senha);
+            echo json_encode(array('retorno' => 1,'codigo' => $codigo ));
+          
         }else{
-            session_start();
+           
+            $codigo = $uc->getRecCodigo($login,$senha);
             $_SESSION['login'] = $login;
-            echo json_encode(array('retorno' => 0,'codigo' => $usuario->getCd_usuario()));
-            //echo 0;
+            echo json_encode(array('retorno' => 0,'codigo' => $codigo ));
+        
         }
     }else{
         echo json_encode(array('retorno' => -1));
-        //echo -1;
+   
 
     }
 }
@@ -162,6 +166,7 @@ function searchUser($login, $senha){
     $uc = new Usuario_Controller();
 
     $teste = $uc->snLogar($login, $senha);
+  
     return $teste;
    // echo "Login: ".$user->getSn_atual();
 }
@@ -173,6 +178,6 @@ function searchUser($login, $senha){
         $uc = new Usuario_Controller();
         $current = $uc->recSnAtual($login, $senha);
 
-
+        //print_r('Atual: '.$current);
         return $current;
     }

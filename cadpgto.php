@@ -9,8 +9,8 @@ $codigo = $_POST['codigo'];
 ?>
 <!DOCTYPE html>
 <html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head><meta http-equiv="Content-Type" content="text/html; charset=euc-jp">
+    
     <title>Retiro - Cadastro de Pagamento </title>
     <link rel="short icon"  href="img/iasd.png"/>
     <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
@@ -22,8 +22,14 @@ $codigo = $_POST['codigo'];
         function dataNow(){
             var dataAtual = new Date();
             var campodata = document.getElementById("data");
-            var month = dataAtual.getMonth() + 1;
-            campodata.value = dataAtual.getDate()+"/"+month+"/"+dataAtual.getFullYear();
+            if(month < 10)
+                month = "0"+month;
+
+            var dia = dataAtual.getDate();
+            if(dia < 10){
+                dia = "0"+dia;
+            }
+            campodata.value = dia+"/"+month+"/"+dataAtual.getFullYear();
         }
     </script>
 </head>
@@ -58,7 +64,7 @@ $codigo = $_POST['codigo'];
             <hr />
             <button type="submit" class="btn btn-success " onclick="salvar()">Salvar</button>
             <button type="reset" class="btn btn-primary">Limpar</button>
-            <a href="javascript:history.back();self.location.reload();" class="btn btn-warning" onclick="return verifica('Tem certeza de que deseja cancelar a opera&ccedil;&atilde;o?');"s>Cancelar</a>
+            <a href="#" class="btn btn-warning voltar" data-url="admpgto.php" data-id="<?php echo $codigo; ?>" onclick="return verifica('Tem certeza de que deseja cancelar a opera&ccedil;&atilde;o?');"s>Cancelar</a>
         </form>
     </div>
 
@@ -101,5 +107,16 @@ $codigo = $_POST['codigo'];
     $.datetimepicker.setLocale('pt-BR');
 </script>
 <script src="js/menu-acao.js"></script>
+<script>
+    $('.voltar').on('click', function(){
+        var url = $(this).data('url'); // vamos buscar o valor do atributo data-name que temos no botè´™o que foi clicado
+        var codigo = $(this).data('id'); // vamos buscar o valor do atributo data-name que temos no botè´™o que foi clicado 
+        var form = $('<form action="' + url + '" method="post">' +
+                    '<input type="hidden" name="codigo" value="' + codigo + '" />' + 
+            '</form>');
+        $('body').append(form);
+        form.submit();
+    });
+</script>
 </body>
 </html>

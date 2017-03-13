@@ -1,5 +1,9 @@
 <?php
-include 'include/sessao.php';
+session_start();
+
+if($_SESSION['login'] == ""){
+   echo "<script>location.href='./';</script>";
+}
  $codigo = $_POST['codigo'];
 
  require_once 'controller/Retiro_Controller.php';
@@ -10,8 +14,8 @@ include 'include/sessao.php';
 ?>
 
 <html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head><meta http-equiv="Content-Type" content="text/html; charset=euc-jp">
+    
     <title>Cadastro de Retiro</title>
     <?php include 'include/head.html' ?>
     <script src="js/acaoretiro.js"></script>
@@ -47,7 +51,7 @@ include 'include/sessao.php';
             <hr />
             <button type="submit" class="btn btn-success " onclick="save()">Salvar</button>
             <button type="reset" class="btn btn-primary">Limpar</button>
-            <a href="javascript:history.back();self.location.reload();" class="btn btn-warning" onclick="return verifica('Tem certeza de que deseja cancelar a opera&ccedil;&atilde;o?');">Cancelar</a>
+            <a href="#" class="btn btn-warning voltar" data-url="admretiro.php" onclick="return verifica('Tem certeza de que deseja cancelar a opera&ccedil;&atilde;o?');">Cancelar</a>
         </form>
     </div>
 
@@ -92,6 +96,16 @@ include 'include/sessao.php';
     $.datetimepicker.setLocale('pt-BR');
 </script>
 <script src="js/menu-acao.js"></script>
+<script>
+    $('.voltar').on('click', function(){
+        var url = $(this).data('url'); // vamos buscar o valor do atributo data-name que temos no botè´™o que foi clicado
 
+        var form = $('<form action="' + url + '" method="post">' +
+
+            '</form>');
+        $('body').append(form);
+        form.submit();
+    });
+</script>
 </body>
 </html>

@@ -19,15 +19,15 @@ class Usuario_DAO {
          $conexao = null;
          $teste = false;
          $this->conexao =  new ConnectionFactory();
-         $sql = "INSERTINTO `usuario` (`NM_USUARIO`, `DS_LOGIN`, `DS_SENHA`, `SN_ATUAL`)
-                 VALUES(:nome,:login,MD5(:senha),'N')";
+         $sql = "INSERT INTO `usuario` (`NM_USUARIO`, `DS_LOGIN`, `DS_SENHA`)
+                 VALUES(:nome,:login,MD5(:senha))";
         try {
             $stmt = $this->conexao->prepare($sql);
             $stmt->bindValue(":nome",$usuario->getNm_usuario(), PDO::PARAM_STR);
             $stmt->bindValue(":login", $usuario->getDs_login(), PDO::PARAM_STR);
             $stmt->bindValue(":senha",$usuario->getDs_senha(), PDO::PARAM_STR);
             $stmt->execute();
-
+            // print_r($stmt);
             $teste = true;
             $this->conexao = null;
         } catch (PDOException $ex) {

@@ -108,7 +108,7 @@ class Pessoa_DAO
         $conexao = null;
         $teste = false;
         $this->conexao =  new ConnectionFactory();
-        $sql = "UPDATE `pgto_pessoa` SET  `DS_VALOR` = :valor =  `CD_PESSOA` = :pessoa";
+        $sql = "UPDATE `pgto_pessoa` SET  `DS_VALOR` = :valor WHERE  `CD_PESSOA` = :pessoa";
         try {
 
             $stmt = $this->conexao->prepare($sql);
@@ -169,15 +169,17 @@ class Pessoa_DAO
         if($pessoa->getSnChale() == "S"){
             $valor  = $valor + 200;
         }
-        $this->inserirNovoPgto($pessoa->getCodigoPessoa(), $valor);
+        $this->updateNovoPgto($pessoa->getCodigoPessoa(), $valor);
         return $teste;
         return $teste;
     }
 
     public function delete($codigo){
+        
         require_once 'ConnectionFactory.class.php';
-        $conexao = null;
+        
         $teste = false;
+        $conexao = null;
         $this->conexao =  new ConnectionFactory();
         $sql = "DELETE FROM `pessoa` WHERE `CD_PESSOA` = :codigo";
         try {
@@ -185,6 +187,29 @@ class Pessoa_DAO
             $stmt->bindValue(":codigo", $codigo,PDO::PARAM_INT);
             $stmt->execute();
             $teste = true;
+            //print_r($stmt);
+            $this->conexao = null;
+        } catch (PDOException $ex) {
+            echo "Erro: ".$ex->getMessage();
+        }
+        $this->deleteValor($codigo);
+        return $teste;
+    }
+
+
+public function deleteValor($codigo){
+        require_once 'ConnectionFactory.class.php';
+        
+        $teste = false;
+        $conexao = null;
+        $this->conexao =  new ConnectionFactory();
+        $sql = "DELETE FROM `pgto_pessoa` WHERE `CD_PESSOA` = :codigo";
+        try {
+            $stmt = $this->conexao->prepare($sql);
+            $stmt->bindValue(":codigo", $codigo,PDO::PARAM_INT);
+            $stmt->execute();
+            $teste = true;
+            //print_r($stmt);
             $this->conexao = null;
         } catch (PDOException $ex) {
             echo "Erro: ".$ex->getMessage();
@@ -204,7 +229,7 @@ class Pessoa_DAO
 
         try {
             if($nome == ""){
-                $sql = "SELECT * FROM `v_pessoa` ";
+                $sql = "SELECT * FROM v_pessoa ";
                 $stmt = $this->conexao->prepare($sql);
 
             }else{

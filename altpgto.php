@@ -16,8 +16,8 @@ $pagamento = $pc->getPagamentos($codigo);
 ?>
 <!DOCTYPE html>
 <html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head><meta http-equiv="Content-Type" content="text/html; charset=euc-jp">
+    
     <title>Retiro - Cadastro de Pagamento </title>
     <link rel="short icon"  href="img/iasd.png"/>
     <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
@@ -29,21 +29,28 @@ $pagamento = $pc->getPagamentos($codigo);
         function dataNow(){
             var dataAtual = new Date();
             var campodata = document.getElementById("data");
-            var month = dataAtual.getMonth() + 1;
-            campodata.value = dataAtual.getDate()+"/"+month+"/"+dataAtual.getFullYear();
+           if(month < 10)
+                month = "0"+month;
+
+            var dia = dataAtual.getDate();
+            if(dia < 10){
+                dia = "0"+dia;
+            }
+            campodata.value = dia+"/"+month+"/"+dataAtual.getFullYear();
         }
     </script>
 </head>
-<body onload="dataNow()">
+<body >
 <?php include 'include/menu.php' ?>
 <div class="container main" style="margin-top: 120px;">
 
     <div class="col-lg-offset-1 col-lg-12">
         <h3 ><?php echo $nome; ?></h3>
         <form action="#" id="cad-pgto" method="post">
+             <?php $cdpessoa =  $pagamento->getPessoa()->getCodigoPessoa(); ?>
             <input type="hidden" id="acao" name="acao" value="A"/>
             <input type="hidden" id="codigo"  value="<?php echo $pagamento->getCdPgto(); ?>"/>
-            <input type="hidden" id="pessoa"  value="<?php echo $pagamento->getPessoa()->getCodigoPessoa(); ?>"/>
+            <input type="hidden" id="pessoa"  value="<?php echo $cdpessoa; ?>"/>
             <input type="hidden" id="nome"  value="<?php echo $nome; ?>"/>
             <div class="form-group col-xs-12 col-sm-3 col-md-3 col-lg-3">
                 <label for="valor">Valor</label>
@@ -72,7 +79,7 @@ $pagamento = $pc->getPagamentos($codigo);
             <hr />
             <button type="submit" class="btn btn-success " onclick="salvar()">Salvar</button>
             <button type="reset" class="btn btn-primary">Limpar</button>
-            <a href="javascript:history.back();self.location.reload();" class="btn btn-warning" onclick="return verifica('Tem certeza de que deseja cancelar a opera&ccedil;&atilde;o?');"s>Cancelar</a>
+            <a href="#" class="btn btn-warning voltar" data-url="admpgto.php" data-id="<?php echo $cdpessoa; ?>" onclick="return verifica('Tem certeza de que deseja cancelar a opera&ccedil;&atilde;o?');"s>Cancelar</a>
         </form>
     </div>
 
@@ -115,5 +122,34 @@ $pagamento = $pc->getPagamentos($codigo);
     $.datetimepicker.setLocale('pt-BR');
 </script>
 <script src="js/menu-acao.js"></script>
+<script>
+    $('.action-button').on('click', function(){
+        var acao = $(this).data('nome'); // vamos buscar o valor do atributo data-name que temos no botè´™o que foi clicado
+        var codigo = $(this).data('id');
+        var url = $(this).data('url');
+
+        console.log('Codigo: '+codigo);
+        var form = $('<form action="' + url + '" method="post">' +
+            '<input type="text" name="codigo" value="' + codigo + '" />' +
+            '<input type="text" name="acao" value="' + acao + '" />' +
+            '</form>');
+        var div = $('<div style="display: none;>"'+form+'</div>');
+        $('body').append(div);
+        form.submit();
+
+    });
+</script>
+<script>
+    $('.voltar').on('click', function(){
+        var url = $(this).data('url'); // vamos buscar o valor do atributo data-name que temos no botè´™o que foi clicado
+        var codigo = $(this).data('id'); // vamos buscar o valor do atributo data-name que temos no botè´™o que foi clicado 
+        var form = $('<form action="' + url + '" method="post">' +
+                    '<input type="hidden" name="codigo" value="' + codigo + '" />' + 
+            '</form>');
+        $('body').append(form);
+        form.submit();
+    });
+</script>
+
 </body>
 </html>

@@ -16,7 +16,7 @@ class Retiro_DAO
         $conexao = null;
         $teste = false;
         $this->conexao =  new ConnectionFactory();
-        $sql = "INSERT INTO RETIRO (DS_RETIRO, DT_RETIRO) VALUES(:descricao,:data_)";
+        $sql = "INSERT INTO `retiro` (`DS_RETIRO`, `DT_RETIRO`) VALUES(:descricao,:data_)";
         try {
             $datas = explode('/',$retiro->getDataRetiro());
             $dia = $datas[0];
@@ -40,7 +40,7 @@ class Retiro_DAO
         $conexao = null;
         $teste = false;
         $this->conexao =  new ConnectionFactory();
-        $sql = "UPDATE RETIRO SET DS_RETIRO = :descricao, DT_RETIRO = :data_ WHERE CD_RETIRO = :codigo";
+        $sql = "UPDATE `retiro` SET `DS_RETIRO` = :descricao, `DT_RETIRO` = :data_ WHERE `CD_RETIRO` = :codigo";
         try {
             $datas = explode('/',$retiro->getDataRetiro());
             $dia = $datas[0];
@@ -65,11 +65,13 @@ class Retiro_DAO
         $conexao = null;
         $teste = false;
         $this->conexao =  new ConnectionFactory();
-        $sql = "DELETE FROM RETIRO  WHERE CD_RETIRO = :codigo";
+        $sql = "DELETE FROM `retiro` WHERE `CD_RETIRO` = :codigo";
+
         try {
             $stmt = $this->conexao->prepare($sql);
             $stmt->bindValue(":codigo", $codigo, PDO::PARAM_INT);
             $stmt->execute();
+           // print_r($stmt);
             $teste = true;
             $this->conexao = null;
         } catch (PDOException $ex) {
@@ -90,11 +92,11 @@ class Retiro_DAO
 
         try {
             if($nome == ""){
-                $sql = "SELECT * FROM RETIRO";
+                $sql = "SELECT * FROM `retiro`";
                 $stmt = $this->conexao->prepare($sql);
 
             }else{
-                $sql = "SELECT * FROM RETIRO WHERE DS_RETIRO LIKE :nome";
+                $sql = "SELECT * FROM `retiro` WHERE `DS_RETIRO` LIKE :nome";
                 $stmt = $this->conexao->prepare($sql);
                 $stmt->bindValue(":nome", "%$nome%", PDO::PARAM_STR);
 
@@ -123,7 +125,7 @@ class Retiro_DAO
 
         $this->conexao =  new ConnectionFactory();
 
-        $sql = "SELECT * FROM RETIRO WHERE CD_RETIRO = :codigo";
+        $sql = "SELECT * FROM `retiro` WHERE `CD_RETIRO` = :codigo";
 
         try {
             $stmt = $this->conexao->prepare($sql);

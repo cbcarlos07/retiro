@@ -17,7 +17,7 @@ class Totais_DAO
 
         $this->conexao =  new ConnectionFactory();
 
-        $sql = "SELECT * FROM V_TOTAIS ";
+        $sql = "SELECT * FROM `v_totais` ";
 
         try {
             $stmt = $this->conexao->prepare($sql);
@@ -26,6 +26,7 @@ class Totais_DAO
 
             if($row =  $stmt->fetch(PDO::FETCH_ASSOC)){
                 $totais = new Totais();
+                $totais->setTotal($row['TOTAL']);
                 $totais->setReceber($row['RECEBER']);
                 $totais->setGasto($row['GASTO']);
                 $totais->setRecebido($row['RECEBIDO']);

@@ -8,12 +8,23 @@
  */
 class Totais
 {
+private $total;
 private $receber;
 private $gasto;
 private $atual;
 private $recebido;
 
-    /**
+public function getTotal()
+    {
+        return $this->total;
+    } 
+
+  public function setTotal($total)
+    {
+        $this->total = $total;
+    }   
+
+/**
      * @return mixed
      */
     public function getReceber()

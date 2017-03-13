@@ -1,5 +1,9 @@
 <?php
-include 'include/sessao.php';
+session_start();
+
+if($_SESSION['login'] == ""){
+   echo "<script>location.href='./';</script>";
+}
 include 'controller/Totais_Controller.class.php';
 include 'beans/Totais.class.php';
 
@@ -21,11 +25,24 @@ $totais = $tc->getTotais();
 
 <?php include 'include/menu.php'?>
 <div class="container" style="margin-top: 100px;">
+<div style="margin: 0 auto;">
+ <center>
+     <div class="col-xs-12 col-sm-6  col-md-6 col-lg-3">
+        <div class="panel panel-default ">
+            <div class="panel-heading">
+                <h2 class="panel-title">Total a Receber</h2>
+            </div>
+            <div class="panel-body">
+
+                <div style="text-align: center;"><h1 style="font-size: 40px; color: green"><?php echo 'R$ '.number_format($totais->getTotal(),2,',','.'); ?></h1></div>
+            </div>
+        </div>
+    </div>
 
     <div class="col-xs-12 col-sm-6  col-md-6 col-lg-3">
         <div class="panel panel-default ">
             <div class="panel-heading">
-                <h2 class="panel-title">A Receber</h2>
+                <h2 class="panel-title">Falta Receber</h2>
             </div>
             <div class="panel-body">
 
@@ -33,6 +50,7 @@ $totais = $tc->getTotais();
             </div>
         </div>
     </div>
+    
     <div class="col-xs-12 col-sm-6 col-md-6 col-lg-3">
         <div class="panel panel-default ">
             <div class="panel-heading">
@@ -72,6 +90,8 @@ $totais = $tc->getTotais();
             </div>
         </div>
     </div>
+   </center>  
+ </div>  
 </div>
 <script src="js/jquery-3.1.1.min.js"></script>
 <script src="js/menu-acao.js"></script>

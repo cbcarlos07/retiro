@@ -24,7 +24,7 @@ class Pagamentos_Controller
     }
 
     public function delete($pagamentos){
-        require_once 'model/Pagamentos_DAO.class.php';
+        require_once '../model/Pagamentos_DAO.class.php';
         $pd = new Pagamentos_DAO();
         $teste = $pd->delete($pagamentos);
         return $teste;
@@ -38,7 +38,7 @@ class Pagamentos_Controller
     }
 
     public function getListaPagamentos($nome, $pessoa){
-        include_once ("model/Pagamentos_DAO.class.php");
+        require_once 'model/Pagamentos_DAO.class.php';
         $pd = new Pagamentos_DAO();
         $teste = $pd->getListaPagamentos($nome, $pessoa);
         return $teste;

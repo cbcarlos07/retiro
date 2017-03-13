@@ -15,7 +15,7 @@ class Valores_DAO
         $conexao = null;
         $teste = false;
         $this->conexao =  new ConnectionFactory();
-        $sql = "INSERT INTO VALORES (DS_VALOR, DESCRICAO, IDADE_INICIAL, IDADE_FINAL)
+        $sql = "INSERT INTO `valores` (`DS_VALOR`, `DESCRICAO`, `IDADE_INICIAL`, `IDADE_FINAL`)
                VALUES(:valor,:descricao,:idade_inicial,:idade_final)";
         try {
             
@@ -38,8 +38,8 @@ class Valores_DAO
         $conexao = null;
         $teste = false;
         $this->conexao =  new ConnectionFactory();
-        $sql = "UPDATE VALORES SET DS_VALOR = :valor, DESCRICAO = :descricao, IDADE_INICIAL = :inicial, IDADE_FINAL = :final
-                 WHERE CD_VALOR = :codigo";
+        $sql = "UPDATE `valores` SET `DS_VALOR` = :valor, `DESCRICAO` = :descricao, `IDADE_INICIAL` = :inicial, `IDADE_FINAL` = :final
+                 WHERE `CD_VALOR` = :codigo";
         try {
 
             $stmt = $this->conexao->prepare($sql);
@@ -62,7 +62,7 @@ class Valores_DAO
         $conexao = null;
         $teste = false;
         $this->conexao =  new ConnectionFactory();
-        $sql = "DELETE FROM VALORES  WHERE CD_VALOR = :codigo";
+        $sql = "DELETE FROM `valores`  WHERE `CD_VALOR` = :codigo";
         try {
             $stmt = $this->conexao->prepare($sql);
             $stmt->bindValue(":codigo", $codigo, PDO::PARAM_INT);
@@ -86,11 +86,11 @@ class Valores_DAO
 
         try {
             if($nome == ""){
-                $sql = "SELECT * FROM VALORES";
+                $sql = "SELECT * FROM `valores`";
                 $stmt = $this->conexao->prepare($sql);
 
             }else{
-                $sql = "SELECT * FROM VALORES WHERE DS_VALOR LIKE :nome";
+                $sql = "SELECT * FROM `valores` WHERE `DS_VALOR` LIKE :nome";
                 $stmt = $this->conexao->prepare($sql);
                 $stmt->bindValue(":nome", "%$nome%", PDO::PARAM_STR);
 
@@ -120,7 +120,7 @@ class Valores_DAO
 
         $this->conexao =  new ConnectionFactory();
 
-        $sql = "SELECT * FROM VALORES WHERE CD_VALOR = :codigo";
+        $sql = "SELECT * FROM `valores` WHERE `CD_VALOR` = :codigo";
 
         try {
             $stmt = $this->conexao->prepare($sql);
@@ -150,8 +150,8 @@ class Valores_DAO
 
         $this->conexao =  new ConnectionFactory();
 
-        $sql = "SELECT * FROM valores v 
-                  WHERE :idade BETWEEN V.IDADE_INICIAL AND V.IDADE_FINAL";
+        $sql = "SELECT * FROM `valores` `V` 
+                  WHERE :idade BETWEEN `V`.`IDADE_INICIAL` AND `V`.`IDADE_FINAL`";
 
         try {
             $stmt = $this->conexao->prepare($sql);

@@ -1,5 +1,9 @@
 <?php
-  include 'include/sessao.php';
+session_start();
+
+if($_SESSION['login'] == ""){
+   echo "<script>location.href='./';</script>";
+}
   $codigo = $_POST['codigo'];
 
   include('controller/Usuario_Controller.php');

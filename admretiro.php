@@ -1,8 +1,10 @@
-
-
-
 <?php
-include 'include/sessao.php';
+
+session_start();
+
+if($_SESSION['login'] == ""){
+   echo "<script>location.href='./';</script>";
+}
 $nome = "";
 if(isset($_POST['search'])){
     $nome = $_POST['search'];
@@ -10,7 +12,7 @@ if(isset($_POST['search'])){
 
 include_once 'controller/Retiro_Controller.php';
 include_once 'services/RetiroListIterator.class.php';
-include_once '/beans/Retiro.class.php';
+include_once 'beans/Retiro.class.php';
 $rc = new Retiro_Controller();
 $lista = $rc->getListaRetiro($nome);
 $retiroList = new RetiroListIterator($lista);

@@ -1,5 +1,9 @@
 <?php
-include 'include/sessao.php';
+session_start();
+
+if($_SESSION['login'] == ""){
+   echo "<script>location.href='./';</script>";
+}
 include 'controller/Totais_Controller.class.php';
 include 'beans/Totais.class.php';
 

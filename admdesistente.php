@@ -1,5 +1,9 @@
 <?php
-include 'include/sessao.php';
+session_start();
+
+if($_SESSION['login'] == ""){
+   echo "<script>location.href='./';</script>";
+}
 
 
 include 'controller/Pessoa_Controller.class.php';
@@ -20,8 +24,8 @@ $pessoaList = new PessoaListIterator($lista);
 
 <!DOCTYPE html>
 <html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head><meta http-equiv="Content-Type" content="text/html; charset=euc-jp">
+    
     <title>Cadastro de Retiro</title>
     <link rel="short icon"  href="img/iasd.png"/>
     <link rel="stylesheet" href="css/style.css" type="text/css" />

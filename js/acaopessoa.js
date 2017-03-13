@@ -38,7 +38,11 @@ function salvar(){
         //var cracha = $('#cracha').value;
         //alert("Acao: "+acao);    
         //console.log("Usuario: "+usuario+" Senha: "+senha);    
-        $.ajax({
+        if(data == "__/__/____"){
+            alert("Preencha a data de nascimento");
+            $('input[name="data"]').css("border-color","red").focus();
+        }else{
+                $.ajax({
                 dataType: 'json',
                 type: "POST",
                 url: "funcoes/pessoa.php",
@@ -71,7 +75,9 @@ function salvar(){
                         
                    }
                 }
-        });
+             });
+         }
+       
 
         return false;
         });
